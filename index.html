@@ -39,7 +39,9 @@
     min-height:100vh;
   }
   .display{font-family:'Fraunces', serif;}
-  #app{max-width:920px;margin:0 auto;padding:24px 18px 60px;}
+  #app{max-width:clamp(320px, 94vw, 1180px);margin:0 auto;padding:24px 18px 60px;}
+  @media(min-width:1000px){ #app{padding-left:28px;padding-right:28px;} }
+  @media(min-width:1400px){ #app{max-width:1320px;} }
 
   *:focus-visible{outline:2px solid var(--seal);outline-offset:2px;}
   @media (prefers-reduced-motion: reduce){
@@ -126,6 +128,12 @@
 
   .write-grid{display:grid;grid-template-columns:1fr;gap:18px;}
   @media(min-width:760px){.write-grid{grid-template-columns:1fr 1.15fr;}}
+  @media(min-width:1000px){
+    .write-grid{gap:26px;}
+    #textInput{min-height:420px;}
+    .paper-zoom-wrap{min-height:420px;}
+    .paper{min-height:420px;}
+  }
 
   #textInput{
     width:100%;min-height:280px;resize:vertical;
@@ -166,7 +174,9 @@
   .paper-empty{color:var(--ink-soft);font-size:13px;font-style:italic;padding:6px 4px;}
 
   .notes-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px;}
-  .notes-list{display:grid;gap:10px;}
+  .notes-list{display:grid;gap:10px;grid-template-columns:1fr;}
+  @media(min-width:700px){ .notes-list{grid-template-columns:1fr 1fr;} }
+  @media(min-width:1100px){ .notes-list{grid-template-columns:1fr 1fr 1fr;} }
   .note-card{
     background:var(--card);border:1px solid var(--line);border-left:3px solid var(--line);border-radius:10px;padding:14px 16px;
     box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;
@@ -194,6 +204,7 @@
   }
   .btn-add:hover{transform:scale(1.06);}
   .glyph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:12px;}
+  @media(min-width:1000px){ .glyph-grid{gap:14px;} }
   .glyph-card{
     background:var(--card);border:1px solid var(--line);border-radius:10px;
     padding:10px 8px 8px;text-align:center;position:relative;box-shadow:var(--shadow);cursor:pointer;
@@ -276,6 +287,29 @@
   .onboarding-google-btn:active{transform:scale(0.98);}
   .onboarding-skip{background:transparent;border:none;color:var(--ink-soft);font-size:12px;cursor:pointer;padding:6px;text-decoration:underline;}
   .onboarding-skip:hover{color:var(--ink);}
+
+  /* ===== FULLSCREEN PREVIEW ===== */
+  .preview-label-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+  .fullscreen-overlay{
+    position:fixed;inset:0;z-index:150;background:var(--paper);
+    display:flex;flex-direction:column;padding:14px;
+  }
+  .fullscreen-overlay.hidden{display:none;}
+  .fs-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+  .fs-zoom-controls{display:flex;align-items:center;gap:8px;}
+  .fs-zoom-controls button{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;flex-shrink:0;}
+  .fs-zoom-controls button:hover{color:var(--ink);border-color:var(--seal);}
+  .fs-zoom-controls span{font-size:12px;color:var(--ink-soft);min-width:40px;text-align:center;}
+  .fs-reset-btn{width:auto !important;padding:0 10px;}
+  .fs-toolbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  .fs-paper-wrap{
+    flex:1;min-height:0;overflow:hidden;position:relative;
+    border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);
+    touch-action:pan-y pinch-zoom;background:var(--card);
+  }
+  .fs-paper-wrap .paper{border:none;box-shadow:none;border-radius:0;transform-origin:0 0;min-height:100%;}
+  #fullscreenOverlay .hint{max-height:80px;opacity:0;text-align:center;}
+  #fullscreenOverlay .hint.show{opacity:1;}
 </style>
 </head>
 <body>
@@ -354,7 +388,10 @@
           <textarea id="textInput" placeholder="Shu yerga yozing..."></textarea>
         </div>
         <div>
-          <p class="panel-label">Qog'ozdagi ko'rinishi</p>
+          <div class="preview-label-row">
+            <p class="panel-label" style="margin-bottom:0;">Qog'ozdagi ko'rinishi</p>
+            <button id="fullscreenBtn" class="icon-btn" disabled title="To'liq ekranda ko'rish">⤢ To'liq ekran</button>
+          </div>
           <div class="paper-zoom-wrap" id="paperZoomWrap">
             <div class="paper lined" id="paperPreview">
               <div class="paper-empty">Yozganingiz shu yerda qo'lyozma ko'rinishida chiqadi.</div>
@@ -448,6 +485,25 @@
       <button id="cancelBoardBtn" class="btn-text">Bekor qilish</button>
     </div>
   </div>
+</div>
+
+<div id="fullscreenOverlay" class="fullscreen-overlay hidden">
+  <div class="fs-toolbar">
+    <div class="fs-zoom-controls">
+      <button id="fsZoomOutBtn">−</button>
+      <span id="fsZoomLabel">100%</span>
+      <button id="fsZoomInBtn">+</button>
+      <button id="fsZoomResetBtn" class="fs-reset-btn">Asl holat</button>
+    </div>
+    <div class="fs-toolbar-actions">
+      <button id="fsDownloadBtn" class="icon-btn primary">Rasm sifatida saqlash</button>
+      <button id="fsCloseBtn" class="icon-btn">✕ Yopish</button>
+    </div>
+  </div>
+  <div class="fs-paper-wrap" id="fsPaperWrap">
+    <div class="paper lined" id="fsPaperPreview"></div>
+  </div>
+  <p class="hint" id="fsDownloadHint"></p>
 </div>
 
 <script>
@@ -670,6 +726,7 @@
   $('linesToggle').onchange = async (e)=>{
     settings.showLines = e.target.checked;
     $('paperPreview').classList.toggle('lined', settings.showLines);
+    $('fsPaperPreview').classList.toggle('lined', settings.showLines);
     await storageSet('settings', settings);
   };
 
@@ -680,6 +737,7 @@
   function refreshToolbarState(){
     const hasText = $('textInput').value.trim().length > 0;
     $('downloadImgBtn').disabled = !hasText;
+    $('fullscreenBtn').disabled = !hasText;
     $('zoomControls').classList.toggle('show', hasText);
     const dirty = $('textInput').value !== (lastSavedContent ?? '') || $('noteTitleInput').value !== (lastSavedTitle ?? '');
     $('saveNoteBtn').disabled = !hasText && !currentNoteId ? true : !dirty;
@@ -1001,23 +1059,21 @@
     });
   }
 
-  function renderPreview(){
-    const paperPreview = $('paperPreview');
-    const text = $('textInput').value;
-    paperPreview.innerHTML = '';
+  function renderInto(target, text){
+    target.innerHTML = '';
     if(text.length===0){
       const empty = document.createElement('div');
       empty.className='paper-empty';
       empty.textContent = "Yozganingiz shu yerda qo'lyozma ko'rinishida chiqadi.";
-      paperPreview.appendChild(empty);
+      target.appendChild(empty);
       return;
     }
     for(const ch of text){
       if(ch === '\n'){
-        const br = document.createElement('div'); br.className='glyph-break'; paperPreview.appendChild(br); continue;
+        const br = document.createElement('div'); br.className='glyph-break'; target.appendChild(br); continue;
       }
       if(ch === ' '){
-        const sp = document.createElement('span'); sp.className='glyph-slot space'; paperPreview.appendChild(sp); continue;
+        const sp = document.createElement('span'); sp.className='glyph-slot space'; target.appendChild(sp); continue;
       }
       const slot = document.createElement('span');
       slot.className = 'glyph-slot';
@@ -1031,14 +1087,63 @@
         slot.classList.add('fallback');
         slot.textContent = ch;
       }
-      paperPreview.appendChild(slot);
+      target.appendChild(slot);
+    }
+  }
+  function renderPreview(){
+    const text = $('textInput').value;
+    renderInto($('paperPreview'), text);
+    if(!$('fullscreenOverlay').classList.contains('hidden')){
+      renderInto($('fsPaperPreview'), text);
     }
   }
   $('textInput').addEventListener('input', ()=>{ renderPreview(); refreshToolbarState(); });
   $('noteTitleInput').addEventListener('input', refreshToolbarState);
 
-  $('downloadImgBtn').onclick = ()=>{
-    const hint = $('downloadHint');
+  // ---- fullscreen preview ----
+  const fsOverlay = $('fullscreenOverlay');
+  let fsZoom = 1;
+  const FS_MIN = 0.3, FS_MAX = 3;
+  function applyFsZoom(){
+    const fp = $('fsPaperPreview');
+    fp.style.transform = `scale(${fsZoom})`;
+    fp.style.width = (100/fsZoom) + '%';
+    $('fsZoomLabel').textContent = Math.round(fsZoom*100) + '%';
+  }
+  function setFsZoom(z){ fsZoom = Math.min(FS_MAX, Math.max(FS_MIN, z)); applyFsZoom(); }
+  function openFullscreen(){
+    if($('textInput').value.length===0) return;
+    closeAllModals();
+    $('fsPaperPreview').classList.toggle('lined', settings.showLines);
+    renderInto($('fsPaperPreview'), $('textInput').value);
+    fsOverlay.classList.remove('hidden');
+    setFsZoom(1);
+  }
+  function closeFullscreen(){ fsOverlay.classList.add('hidden'); }
+  $('fullscreenBtn').onclick = openFullscreen;
+  $('fsCloseBtn').onclick = closeFullscreen;
+  $('fsZoomInBtn').onclick = ()=> setFsZoom(fsZoom + 0.15);
+  $('fsZoomOutBtn').onclick = ()=> setFsZoom(fsZoom - 0.15);
+  $('fsZoomResetBtn').onclick = ()=> setFsZoom(1);
+  document.addEventListener('keydown', (e)=>{
+    if(e.key==='Escape' && !fsOverlay.classList.contains('hidden')) closeFullscreen();
+  });
+  (function(){
+    let startDist = 0, startZoom = 1;
+    function dist(t){ return Math.hypot(t[0].clientX-t[1].clientX, t[0].clientY-t[1].clientY); }
+    const wrap = $('fsPaperWrap');
+    wrap.addEventListener('touchstart', (e)=>{
+      if(e.touches.length===2){ startDist = dist(e.touches); startZoom = fsZoom; }
+    }, {passive:true});
+    wrap.addEventListener('touchmove', (e)=>{
+      if(e.touches.length===2){ e.preventDefault(); setFsZoom(startZoom * (dist(e.touches)/startDist)); }
+    }, {passive:false});
+    wrap.addEventListener('wheel', (e)=>{
+      if(e.ctrlKey || e.metaKey){ e.preventDefault(); setFsZoom(fsZoom - e.deltaY*0.001); }
+    }, {passive:false});
+  })();
+
+  async function generateAndDownloadImage(hint){
     const text = $('textInput').value;
     if(!text){ showHint(hint, 'Avval biror narsa yozing.', 3000); return; }
 
@@ -1135,7 +1240,10 @@
       }, 'image/png');
       showHint(hint, "Rasm yuklandi — endi uni to'g'ridan-to'g'ri Telegram yoki Instagram'ga rasm/story sifatida yuborishingiz mumkin.", 5000);
     }
-  };
+  }
+
+  $('downloadImgBtn').onclick = ()=> generateAndDownloadImage($('downloadHint'));
+  $('fsDownloadBtn').onclick = ()=> generateAndDownloadImage($('fsDownloadHint'));
 
   (function(){
     const wrap = $('paperZoomWrap');
