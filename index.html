@@ -3,9 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mening Xatim — shaxsiy qo'lyozma shrift</title>
+<title>MRfont — shaxsiy qo'lyozma shrift</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232A2318' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='24' height='24' rx='5' fill='%23FAF4E4'/%3E%3Cpath d='M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z'/%3E%3Cpath d='M13.5 6.9l3.6 3.6'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=Caveat:wght@400;600;700&family=Shadows+Into+Light&family=Indie+Flower&family=Homemade+Apple&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
   :root{
     --paper: #E9DDC3;
@@ -62,6 +66,25 @@
   }
   header .title-block h1{font-size:28px;font-weight:700;margin:0 0 4px;letter-spacing:-0.01em;}
   header .title-block p{margin:0;color:var(--ink-soft);font-size:13px;}
+
+  .auth-box{display:flex;align-items:center;gap:8px;}
+  .google-btn{
+    display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);
+    color:var(--ink);border-radius:999px;padding:8px 16px 8px 8px;font-family:'Work Sans';font-weight:600;
+    font-size:13px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s, transform .1s;
+  }
+  .google-btn:hover{border-color:var(--seal);}
+  .google-btn:active{transform:scale(0.97);}
+  .user-info{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 5px;box-shadow:var(--shadow);}
+  .user-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;background:var(--paper-deep);}
+  .user-info span{font-size:12px;color:var(--ink-soft);font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .user-info button{border:none;background:transparent;color:var(--ink-soft);font-size:12px;cursor:pointer;padding:0 0 0 4px;}
+  .user-info button:hover{color:var(--seal);}
+  .sync-banner{
+    display:none;align-items:center;gap:8px;background:var(--card);border:1px dashed var(--line);border-radius:8px;
+    padding:8px 12px;font-size:12px;color:var(--ink-soft);margin-bottom:14px;
+  }
+  .sync-banner.show{display:flex;}
 
   nav.tabs{display:flex;gap:3px;background:var(--paper-deep);padding:4px;border-radius:999px;border:1px solid var(--line);overflow-x:auto;max-width:100%;}
   nav.tabs button{
@@ -213,9 +236,14 @@
 <div id="app">
   <header>
     <div class="title-row">
-      <div class="seal-badge"><span>M</span></div>
+      <div class="seal-badge">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F4E9D6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z"/>
+          <path d="M13.5 6.9l3.6 3.6"/>
+        </svg>
+      </div>
       <div class="title-block">
-        <h1 class="display">Mening Xatim</h1>
+        <h1 class="display">MRfont</h1>
         <p>O'z qo'lyozmangizdan shaxsiy qo'lyozma yasang</p>
       </div>
     </div>
@@ -224,7 +252,19 @@
       <button id="tabNotes">Xatlarim</button>
       <button id="tabSettings">Harflar</button>
     </nav>
+    <div class="auth-box" id="authBox">
+      <button id="signInBtn" class="google-btn">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.98v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.98A9 9 0 0 0 0 9c0 1.45.35 2.82.98 4.03z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .98 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
+        Google orqali kirish
+      </button>
+      <div id="userInfo" class="user-info" style="display:none;">
+        <img id="userAvatar" class="user-avatar" alt="">
+        <span id="userName"></span>
+        <button id="signOutBtn">Chiqish</button>
+      </div>
+    </div>
   </header>
+  <div class="sync-banner" id="syncBanner"></div>
 
   <main>
     <section id="write-view" class="view active">
@@ -346,19 +386,123 @@
 
   const $ = (id) => document.getElementById(id);
 
-  async function storageGet(key){
+  // ================= FIREBASE (per-account cloud storage) =================
+  const firebaseConfig = {
+    apiKey: "AIzaSyCwhg7OAJz5NDRP2g-_jiDiqJeoPBbjPF4",
+    authDomain: "font-a8aee.firebaseapp.com",
+    projectId: "font-a8aee",
+    storageBucket: "font-a8aee.firebasestorage.app",
+    messagingSenderId: "914945444787",
+    appId: "1:914945444787:web:bd032a2f3087ec4d8cd9c6",
+    measurementId: "G-89ZGHYSR5G"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  let currentUser = null;
+
+  // ---- local (per-device) fallback, used before sign-in ----
+  async function localGet(key){
     try{
       const r = await window.storage.get(key, false);
       return r ? JSON.parse(r.value) : null;
     }catch(e){ return null; }
   }
-  async function storageSet(key, value){
+  async function localSet(key, value){
     try{ await window.storage.set(key, JSON.stringify(value), false); return true; }
-    catch(e){ console.error('storage set failed', key, e); return false; }
+    catch(e){ console.error('local set failed', key, e); return false; }
   }
-  async function storageDelete(key){
+  async function localDelete(key){
     try{ await window.storage.delete(key, false); }catch(e){}
   }
+
+  // ---- cloud (per Google account), used once signed in ----
+  async function cloudGet(key){
+    if(!currentUser) return null;
+    try{
+      const doc = await db.collection('users').doc(currentUser.uid).collection('data').doc(key).get();
+      if(!doc.exists) return null;
+      const raw = doc.data().value;
+      return raw != null ? JSON.parse(raw) : null;
+    }catch(e){ console.error('cloud get failed', key, e); return null; }
+  }
+  async function cloudSet(key, value){
+    if(!currentUser) return false;
+    try{
+      await db.collection('users').doc(currentUser.uid).collection('data').doc(key).set({
+        value: JSON.stringify(value),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      return true;
+    }catch(e){ console.error('cloud set failed', key, e); return false; }
+  }
+  async function cloudDelete(key){
+    if(!currentUser) return;
+    try{ await db.collection('users').doc(currentUser.uid).collection('data').doc(key).delete(); }
+    catch(e){ console.error('cloud delete failed', key, e); }
+  }
+
+  // ---- dispatcher used everywhere else in the app ----
+  async function storageGet(key){ return currentUser ? cloudGet(key) : localGet(key); }
+  async function storageSet(key, value){ return currentUser ? cloudSet(key, value) : localSet(key, value); }
+  async function storageDelete(key){ return currentUser ? cloudDelete(key) : localDelete(key); }
+
+  async function migrateLocalDataToCloud(){
+    try{
+      const cloudManifest = await cloudGet('manifest');
+      if(cloudManifest && cloudManifest.length) return; // this account already has cloud data
+      const localManifest = await localGet('manifest');
+      if(!localManifest || !localManifest.length) return; // nothing on this device to migrate
+      const proceed = confirm("Bu qurilmada mahalliy saqlangan harflar/xatlar topildi. Ularni shu Google hisobiga ko'chirib qo'yaymi?");
+      if(!proceed) return;
+      await cloudSet('manifest', localManifest);
+      for(const ch of localManifest){
+        const g = await localGet('glyph:'+ch);
+        if(g) await cloudSet('glyph:'+ch, g);
+      }
+      const localNotesList = (await localGet('notes-list')) || [];
+      await cloudSet('notes-list', localNotesList);
+      for(const n of localNotesList){
+        const full = await localGet('note:'+n.id);
+        if(full) await cloudSet('note:'+n.id, full);
+      }
+      const localSettings = await localGet('settings');
+      if(localSettings) await cloudSet('settings', localSettings);
+      const sb = $('syncBanner');
+      sb.classList.add('show');
+      sb.textContent = "Mahalliy ma'lumotlar Google hisobingizga muvaffaqiyatli ko'chirildi.";
+    }catch(e){ console.error('migration failed', e); }
+  }
+
+  $('signInBtn').onclick = ()=>{
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).catch(err=>{
+      console.error(err);
+      alert("Kirishda xatolik: " + err.message);
+    });
+  };
+  $('signOutBtn').onclick = ()=> auth.signOut();
+
+  auth.onAuthStateChanged(async (user)=>{
+    currentUser = user;
+    const sb = $('syncBanner');
+    if(user){
+      $('signInBtn').style.display = 'none';
+      $('userInfo').style.display = 'flex';
+      $('userAvatar').src = user.photoURL || '';
+      $('userName').textContent = user.displayName || user.email || '';
+      sb.classList.add('show');
+      sb.textContent = `Bulutga saqlanmoqda: ${user.displayName || user.email}`;
+      await migrateLocalDataToCloud();
+    } else {
+      $('signInBtn').style.display = 'flex';
+      $('userInfo').style.display = 'none';
+      sb.classList.add('show');
+      sb.textContent = "Kirmagansiz — ma'lumotlar faqat shu qurilmada saqlanadi. Google orqali kiring, hisobingizga saqlansin.";
+    }
+    manifest = []; glyphsData = {}; notesList = []; currentNoteId = null;
+    await loadAll();
+  });
 
   async function loadAll(){
     manifest = (await storageGet('manifest')) || [];
@@ -911,7 +1055,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'mening-xatim-zaxira.json';
+      a.download = 'mrfont-zaxira.json';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1217,7 +1361,6 @@
       : "Hech narsa chizib bo'lmadi.";
   };
 
-  loadAll();
 })();
 </script>
 </body>
