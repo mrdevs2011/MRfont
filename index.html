@@ -46,8 +46,12 @@
     *{transition-duration:0.001ms !important; animation-duration:0.001ms !important;}
   }
 
-  header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
-  .title-row{display:flex;align-items:center;gap:14px;}
+  /* ===== HEADER — restructured into two stacked rows so it never
+     scrambles order on narrow screens (was one flex row with
+     space-between across 3 unrelated groups) ===== */
+  header{display:flex;flex-direction:column;gap:14px;margin-bottom:20px;}
+  .header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .title-row{display:flex;align-items:center;gap:14px;min-width:0;}
   .seal-badge{
     width:46px;height:52px;flex-shrink:0;position:relative;
     background:radial-gradient(circle at 35% 30%, #b5493a, var(--seal) 55%, var(--seal-dark) 100%);
@@ -64,21 +68,25 @@
     font-family:'Fraunces';font-style:italic;font-weight:600;color:rgba(255,240,225,0.9);font-size:20px;
     text-shadow:0 1px 1px rgba(0,0,0,0.3);
   }
+  header .title-block{min-width:0;}
   header .title-block h1{font-size:28px;font-weight:700;margin:0 0 4px;letter-spacing:-0.01em;}
   header .title-block p{margin:0;color:var(--ink-soft);font-size:13px;}
 
-  .auth-box{display:flex;align-items:center;gap:8px;}
+  .auth-box{display:flex;align-items:center;gap:8px;min-height:38px;flex-shrink:0;}
   .google-btn{
     display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);
     color:var(--ink);border-radius:999px;padding:8px 16px 8px 8px;font-family:'Work Sans';font-weight:600;
     font-size:13px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s, transform .1s;
+    white-space:nowrap;
   }
   .google-btn:hover{border-color:var(--seal);}
   .google-btn:active{transform:scale(0.97);}
+  .google-btn .gtext-full{display:inline;}
+  .google-btn .gtext-short{display:none;}
   .user-info{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 5px;box-shadow:var(--shadow);}
-  .user-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;background:var(--paper-deep);}
+  .user-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;background:var(--paper-deep);flex-shrink:0;}
   .user-info span{font-size:12px;color:var(--ink-soft);font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .user-info button{border:none;background:transparent;color:var(--ink-soft);font-size:12px;cursor:pointer;padding:0 0 0 4px;}
+  .user-info button{border:none;background:transparent;color:var(--ink-soft);font-size:12px;cursor:pointer;padding:0 0 0 4px;white-space:nowrap;}
   .user-info button:hover{color:var(--seal);}
   .sync-banner{
     display:none;align-items:center;gap:8px;background:var(--card);border:1px dashed var(--line);border-radius:8px;
@@ -86,13 +94,22 @@
   }
   .sync-banner.show{display:flex;}
 
-  nav.tabs{display:flex;gap:3px;background:var(--paper-deep);padding:4px;border-radius:999px;border:1px solid var(--line);overflow-x:auto;max-width:100%;}
+  /* Tabs now live on their own full-width row below the title/auth row */
+  nav.tabs{display:flex;gap:3px;background:var(--paper-deep);padding:4px;border-radius:999px;border:1px solid var(--line);overflow-x:auto;max-width:100%;width:100%;}
   nav.tabs button{
     border:none;background:transparent;padding:8px 14px;border-radius:999px;white-space:nowrap;
     font-family:'Work Sans';font-size:13px;font-weight:600;color:var(--ink-soft);cursor:pointer;
-    transition:background .2s, color .2s;
+    transition:background .2s, color .2s;flex:1 1 auto;
   }
   nav.tabs button.active{background:var(--ink);color:var(--paper);}
+
+  @media (max-width:480px){
+    header .title-block h1{font-size:23px;}
+    header .title-block p{display:none;} /* tagline drops first on tiny screens instead of wrapping/pushing layout */
+    .google-btn .gtext-full{display:none;}
+    .google-btn .gtext-short{display:inline;}
+    .google-btn{padding:8px 12px 8px 8px;}
+  }
 
   .view{display:none;}
   .view.active{display:block;}
@@ -108,14 +125,14 @@
   .icon-btn{
     border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:8px;
     padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Work Sans';
-    transition:border-color .15s, color .15s, transform .1s;
+    transition:border-color .15s, color .15s, transform .1s;white-space:nowrap;
   }
   .icon-btn:hover{color:var(--ink);border-color:var(--seal);}
   .icon-btn:active{transform:scale(0.96);}
   .icon-btn.primary{background:var(--seal);color:#fff;border-color:var(--seal);}
   .icon-btn.primary:hover{background:var(--seal-dark);}
 
-  .lines-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);}
+  .lines-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);white-space:nowrap;}
   .lines-toggle input{accent-color:var(--seal);}
 
   .write-grid{display:grid;grid-template-columns:1fr;gap:18px;}
@@ -129,10 +146,13 @@
   }
   #textInput:focus{outline:2px solid var(--seal);outline-offset:2px;}
 
-  .paper-zoom-wrap{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:var(--shadow);touch-action:none;min-height:280px;background:var(--card);}
+  /* touch-action was fully "none" here, which blocked normal one-finger
+     page scrolling anywhere over this panel on mobile. pan-y keeps
+     vertical page scroll working; pinch-zoom is still handled by JS. */
+  .paper-zoom-wrap{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:var(--shadow);touch-action:pan-y pinch-zoom;min-height:280px;background:var(--card);}
   .paper-zoom-wrap .paper{border:none;box-shadow:none;border-radius:0;transform-origin:0 0;}
-  .zoom-controls{display:flex;align-items:center;gap:8px;margin-top:8px;}
-  .zoom-controls button{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;}
+  .zoom-controls{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
+  .zoom-controls button{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;flex-shrink:0;}
   .zoom-controls button:hover{color:var(--ink);border-color:var(--seal);}
   .zoom-controls span{font-size:12px;color:var(--ink-soft);min-width:40px;text-align:center;}
 
@@ -155,7 +175,7 @@
   .glyph-break{flex-basis:100%;height:0;}
   .paper-empty{color:var(--ink-soft);font-size:13px;font-style:italic;padding:6px 4px;}
 
-  .notes-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .notes-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px;}
   .notes-list{display:grid;gap:10px;}
   .note-card{
     background:var(--card);border:1px solid var(--line);border-left:3px solid var(--line);border-radius:10px;padding:14px 16px;
@@ -168,10 +188,14 @@
   .note-del{border:none;background:transparent;color:var(--ink-soft);font-size:18px;cursor:pointer;flex-shrink:0;}
   .note-del:hover{color:var(--seal);}
 
-  .settings-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:10px;flex-wrap:wrap;}
+  /* ===== SETTINGS HEADER — regrouped so the primary "+" action stays
+     visually anchored and secondary utilities (backup/import/random)
+     collapse into their own row instead of one long wrapping strip ===== */
+  .settings-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:10px;flex-wrap:wrap;}
   .settings-header h2{margin:0;font-size:20px;}
   .settings-sub{color:var(--ink-soft);font-size:13px;margin:2px 0 0;}
-  .settings-header-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .settings-header-actions{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+  .settings-utility-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
   .btn-add{
     width:46px;height:46px;border-radius:50%;border:none;flex-shrink:0;
     background:radial-gradient(circle at 35% 30%, #b5493a, var(--seal) 60%, var(--seal-dark));
@@ -235,16 +259,30 @@
 <body>
 <div id="app">
   <header>
-    <div class="title-row">
-      <div class="seal-badge">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F4E9D6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z"/>
-          <path d="M13.5 6.9l3.6 3.6"/>
-        </svg>
+    <div class="header-top">
+      <div class="title-row">
+        <div class="seal-badge">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F4E9D6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z"/>
+            <path d="M13.5 6.9l3.6 3.6"/>
+          </svg>
+        </div>
+        <div class="title-block">
+          <h1 class="display">MRfont</h1>
+          <p>O'z qo'lyozmangizdan shaxsiy qo'lyozma yasang</p>
+        </div>
       </div>
-      <div class="title-block">
-        <h1 class="display">MRfont</h1>
-        <p>O'z qo'lyozmangizdan shaxsiy qo'lyozma yasang</p>
+      <div class="auth-box" id="authBox">
+        <button id="signInBtn" class="google-btn">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.98v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.98A9 9 0 0 0 0 9c0 1.45.35 2.82.98 4.03z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .98 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
+          <span class="gtext-full">Google orqali kirish</span>
+          <span class="gtext-short">Kirish</span>
+        </button>
+        <div id="userInfo" class="user-info" style="display:none;">
+          <img id="userAvatar" class="user-avatar" alt="">
+          <span id="userName"></span>
+          <button id="signOutBtn">Chiqish</button>
+        </div>
       </div>
     </div>
     <nav class="tabs">
@@ -252,17 +290,6 @@
       <button id="tabNotes">Xatlarim</button>
       <button id="tabSettings">Harflar</button>
     </nav>
-    <div class="auth-box" id="authBox">
-      <button id="signInBtn" class="google-btn">
-        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.98v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.98A9 9 0 0 0 0 9c0 1.45.35 2.82.98 4.03z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .98 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
-        Google orqali kirish
-      </button>
-      <div id="userInfo" class="user-info" style="display:none;">
-        <img id="userAvatar" class="user-avatar" alt="">
-        <span id="userName"></span>
-        <button id="signOutBtn">Chiqish</button>
-      </div>
-    </div>
   </header>
   <div class="sync-banner" id="syncBanner"></div>
 
@@ -320,12 +347,14 @@
           <p class="settings-sub">Har bir belgi uchun o'z qo'lingiz bilan chizing. Bir belgiga bir nechta variant qo'shsangiz, yozuv tabiiyroq ko'rinadi.</p>
         </div>
         <div class="settings-header-actions">
-          <button id="randomFillBtn" class="icon-btn">Random</button>
-          <button id="exportJsonBtn" class="icon-btn">Zaxira (JSON)</button>
-          <button id="importJsonBtn" class="icon-btn">Yuklash</button>
-          <input type="file" id="importFileInput" accept="application/json" style="display:none;">
           <button id="addGlyphBtn" class="btn-add" title="Yangi harf qo'shish">+</button>
         </div>
+      </div>
+      <div class="settings-utility-row">
+        <button id="randomFillBtn" class="icon-btn">Random</button>
+        <button id="exportJsonBtn" class="icon-btn">Zaxira (JSON)</button>
+        <button id="importJsonBtn" class="icon-btn">Yuklash</button>
+        <input type="file" id="importFileInput" accept="application/json" style="display:none;">
       </div>
       <p class="hint" id="backupHint" style="display:none;"></p>
       <div id="glyphGrid" class="glyph-grid">
