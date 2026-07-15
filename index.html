@@ -117,6 +117,9 @@
   .icon-btn:active{transform:scale(0.96);}
   .icon-btn.primary{background:var(--seal);color:#fff;border-color:var(--seal);}
   .icon-btn.primary:hover{background:var(--seal-dark);}
+  .icon-btn:disabled{opacity:.4;cursor:not-allowed;transform:none !important;}
+  .icon-btn:disabled:hover{color:var(--ink-soft);border-color:var(--line);}
+  .icon-btn.primary:disabled{background:var(--paper-deep);border-color:var(--line);color:var(--ink-soft);}
 
   .lines-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);white-space:nowrap;}
   .lines-toggle input{accent-color:var(--seal);}
@@ -137,7 +140,8 @@
      vertical page scroll working; pinch-zoom is still handled by JS. */
   .paper-zoom-wrap{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:var(--shadow);touch-action:pan-y pinch-zoom;min-height:280px;background:var(--card);}
   .paper-zoom-wrap .paper{border:none;box-shadow:none;border-radius:0;transform-origin:0 0;}
-  .zoom-controls{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
+  .zoom-controls{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;max-height:0;opacity:0;overflow:hidden;transition:max-height .25s ease, opacity .2s ease, margin-top .25s ease;margin-top:0;}
+  .zoom-controls.show{max-height:60px;opacity:1;margin-top:8px;}
   .zoom-controls button{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;flex-shrink:0;}
   .zoom-controls button:hover{color:var(--ink);border-color:var(--seal);}
   .zoom-controls span{font-size:12px;color:var(--ink-soft);min-width:40px;text-align:center;}
@@ -205,8 +209,8 @@
     position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;
     background:var(--ink);color:var(--paper);border:none;font-size:12px;cursor:pointer;line-height:1;
   }
-  .empty-state{grid-column:1/-1;text-align:center;padding:36px 20px;color:var(--ink-soft);border:1px dashed var(--line);border-radius:10px;font-size:14px;}
-  .empty-state svg{display:block;margin:0 auto 10px;opacity:.55;}
+  .empty-state{grid-column:1/-1;text-align:center;padding:36px 20px;color:var(--ink-soft);border:1px dashed var(--line);border-radius:10px;font-size:14px;opacity:.75;}
+  .empty-state svg{display:block;margin:0 auto 10px;opacity:.5;}
 
   .modal-overlay{position:fixed;inset:0;background:rgba(38,34,28,0.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;}
   .modal-overlay.hidden{display:none;}
@@ -234,7 +238,9 @@
   }
   .board-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
   .board-actions .btn-text{grid-column:1/-1;}
-  .hint{font-size:12px;color:var(--ink-soft);margin-top:10px;line-height:1.5;}
+  .hint{font-size:12px;color:var(--ink-soft);margin-top:10px;line-height:1.5;max-height:0;opacity:0;overflow:hidden;transition:max-height .25s ease, opacity .2s ease, margin-top .25s ease;margin-top:0;}
+  .hint.show{max-height:80px;opacity:1;margin-top:10px;}
+  .board-modal .hint, .modal .hint{max-height:80px;opacity:1;margin-top:10px;} /* static helper text inside modals stays as-is */
 
   .variants-modal .variant-row{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;background:var(--paper);}
   .variants-modal .variant-row img{height:36px;width:auto;}
@@ -338,8 +344,8 @@
         <div class="toolbar-actions">
           <label class="lines-toggle"><input type="checkbox" id="linesToggle" checked> Chiziqlar</label>
           <button id="newNoteBtn" class="icon-btn">Yangi</button>
-          <button id="saveNoteBtn" class="icon-btn primary">Saqlash</button>
-          <button id="downloadImgBtn" class="icon-btn">Rasm sifatida yuklab olish</button>
+          <button id="saveNoteBtn" class="icon-btn primary" disabled>Saqlash</button>
+          <button id="downloadImgBtn" class="icon-btn" disabled>Rasm sifatida yuklab olish</button>
         </div>
       </div>
       <div class="write-grid">
@@ -354,13 +360,13 @@
               <div class="paper-empty">Yozganingiz shu yerda qo'lyozma ko'rinishida chiqadi.</div>
             </div>
           </div>
-          <div class="zoom-controls">
+          <div class="zoom-controls" id="zoomControls">
             <button id="zoomOutBtn">−</button>
             <span id="zoomLabel">100%</span>
             <button id="zoomInBtn">+</button>
             <button id="zoomResetBtn" style="width:auto;padding:0 10px;">Asl holat</button>
           </div>
-          <p class="hint" id="downloadHint" style="display:none;"></p>
+          <p class="hint" id="downloadHint"></p>
         </div>
       </div>
     </section>
@@ -391,7 +397,7 @@
       <div class="settings-utility-row">
         <button id="randomFillBtn" class="icon-btn">Random</button>
       </div>
-      <p class="hint" id="backupHint" style="display:none;"></p>
+      <p class="hint" id="backupHint"></p>
       <div id="glyphGrid" class="glyph-grid">
         <div class="empty-state"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>Hali birorta harf qo'shilmagan. Boshlash uchun + tugmasini bosing.</div>
       </div>
@@ -457,6 +463,27 @@
   let currentStrokes = [];
 
   const $ = (id) => document.getElementById(id);
+
+  // ---- modal coordination: only one modal-type overlay may be visible at a time ----
+  const ALL_MODAL_IDS = ['addModal','variantsModal','accountModal','boardModal'];
+  function closeAllModals(except){
+    ALL_MODAL_IDS.forEach(id=>{
+      if(id !== except) $(id).classList.add('hidden');
+    });
+  }
+  function openModal(id){
+    closeAllModals(id);
+    $(id).classList.remove('hidden');
+  }
+
+  // ---- transient hint helper: shows a message, then fades it out on its own ----
+  const hintTimers = {};
+  function showHint(el, text, ms){
+    if(hintTimers[el.id]) clearTimeout(hintTimers[el.id]);
+    el.textContent = text;
+    el.classList.add('show');
+    hintTimers[el.id] = setTimeout(()=>{ el.classList.remove('show'); }, ms || 4000);
+  }
 
   // ================= FIREBASE (per-account cloud storage) =================
   const firebaseConfig = {
@@ -540,9 +567,8 @@
       }
       const localSettings = await localGet('settings');
       if(localSettings) await cloudSet('settings', localSettings);
-      const sb = $('syncBanner');
-      sb.classList.add('show');
-      sb.textContent = "Mahalliy ma'lumotlar Google hisobingizga muvaffaqiyatli ko'chirildi.";
+      showHint($('syncBanner'), "Mahalliy ma'lumotlar Google hisobingizga muvaffaqiyatli ko'chirildi.", 5000);
+      $('syncBanner').classList.add('show-banner');
     }catch(e){ console.error('migration failed', e); }
   }
 
@@ -574,7 +600,7 @@
   $('onboardingSkipBtn').onclick = hideOnboarding;
 
   const accountModal = $('accountModal');
-  $('accountSettingsBtn').onclick = ()=> accountModal.classList.remove('hidden');
+  $('accountSettingsBtn').onclick = ()=> openModal('accountModal');
   $('closeAccountModalBtn').onclick = ()=> accountModal.classList.add('hidden');
   $('modalSignOutBtn').onclick = async ()=>{
     await auth.signOut();
@@ -604,6 +630,8 @@
       sb.classList.add('show');
       sb.textContent = "Kirmagansiz — ma'lumotlar faqat shu qurilmada saqlanadi. Google orqali kiring, hisobingizga saqlansin.";
     }
+    // sync state changes are worth a brief note, not a permanent banner
+    setTimeout(()=>{ sb.classList.remove('show'); }, 4000);
     manifest = []; glyphsData = {}; notesList = []; currentNoteId = null;
     await loadAll();
   });
@@ -647,11 +675,23 @@
 
   function uid(){ return 'n'+Date.now()+Math.random().toString(36).slice(2,7); }
 
+  // ---- toolbar button state: reflect whether there's actually anything to act on ----
+  let lastSavedContent = null, lastSavedTitle = null;
+  function refreshToolbarState(){
+    const hasText = $('textInput').value.trim().length > 0;
+    $('downloadImgBtn').disabled = !hasText;
+    $('zoomControls').classList.toggle('show', hasText);
+    const dirty = $('textInput').value !== (lastSavedContent ?? '') || $('noteTitleInput').value !== (lastSavedTitle ?? '');
+    $('saveNoteBtn').disabled = !hasText && !currentNoteId ? true : !dirty;
+  }
+
   function newNote(){
     currentNoteId = null;
     $('noteTitleInput').value = '';
     $('textInput').value = '';
+    lastSavedContent = null; lastSavedTitle = null;
     renderPreview();
+    refreshToolbarState();
   }
   $('newNoteBtn').onclick = newNote;
   $('notesNewBtn').onclick = ()=>{ newNote(); showView('write'); };
@@ -668,7 +708,9 @@
     if(idx>=0) notesList[idx] = entry; else notesList.unshift(entry);
     await storageSet('notes-list', notesList);
     $('noteTitleInput').value = title;
+    lastSavedContent = content; lastSavedTitle = title;
     $('saveNoteBtn').textContent = 'Saqlandi ✓';
+    refreshToolbarState();
     setTimeout(()=>{ $('saveNoteBtn').textContent = 'Saqlash'; }, 1200);
   };
 
@@ -705,7 +747,9 @@
         currentNoteId = n.id;
         $('noteTitleInput').value = n.title;
         $('textInput').value = full ? full.content : '';
+        lastSavedContent = $('textInput').value; lastSavedTitle = n.title;
         renderPreview();
+        refreshToolbarState();
         showView('write');
       };
       el.appendChild(card);
@@ -718,7 +762,7 @@
   const addModal = $('addModal'), charInput = $('charInput');
   $('addGlyphBtn').onclick = ()=>{
     charInput.value='';
-    addModal.classList.remove('hidden');
+    openModal('addModal');
     setTimeout(()=>charInput.focus(), 50);
   };
   $('closeModalBtn').onclick = ()=> addModal.classList.add('hidden');
@@ -728,7 +772,6 @@
     if(!ch){ charInput.focus(); return; }
     pendingChar = ch; pendingVariantChar = null;
     openBoard(ch);
-    addModal.classList.add('hidden');
   };
 
   const variantsModal = $('variantsModal');
@@ -737,13 +780,13 @@
     variantsCurrentChar = ch;
     $('variantsCharLabel').textContent = ch === ' ' ? '(bo\'sh joy)' : ch;
     renderVariantsList();
-    variantsModal.classList.remove('hidden');
+    openModal('variantsModal');
   }
   function renderVariantsList(){
     const list = glyphsData[variantsCurrentChar] || [];
     const el = $('variantsList');
     if(list.length===0){
-      el.innerHTML = '<p class="hint">Hali variant yo\'q.</p>';
+      el.innerHTML = '<p class="hint show">Hali variant yo\'q.</p>';
       return;
     }
     el.innerHTML = '';
@@ -782,7 +825,6 @@
   }
   $('addVariantBtn').onclick = ()=>{
     pendingVariantChar = variantsCurrentChar; pendingChar = null;
-    variantsModal.classList.add('hidden');
     openBoard(variantsCurrentChar);
   };
   $('closeVariantsBtn').onclick = ()=> variantsModal.classList.add('hidden');
@@ -798,7 +840,7 @@
     boardCharLabel.textContent = ch === ' ' ? '(bo\'sh joy)' : ch;
     currentStrokes = [];
     clearCanvas();
-    boardModal.classList.remove('hidden');
+    openModal('boardModal');
   }
   function clearCanvas(){ ctx.clearRect(0,0,canvas.width,canvas.height); }
   function redrawAll(){
@@ -931,9 +973,15 @@
       const label = document.createElement('div');
       label.className = 'label';
       label.textContent = ch === ' ' ? "(bo'sh joy)" : ch;
-      const count = document.createElement('div');
-      count.className = 'variant-count';
-      count.textContent = variants.length + ' variant';
+      card.appendChild(label);
+      // only show the variant count once there's more than one — a single
+      // variant is the expected baseline, not information worth surfacing
+      if(variants.length > 1){
+        const count = document.createElement('div');
+        count.className = 'variant-count';
+        count.textContent = variants.length + ' variant';
+        card.appendChild(count);
+      }
       const del = document.createElement('button');
       del.className = 'del';
       del.textContent = '×';
@@ -947,9 +995,7 @@
         renderGlyphGrid(); renderPreview();
       };
       card.appendChild(del);
-      card.appendChild(thumb);
-      card.appendChild(label);
-      card.appendChild(count);
+      card.insertBefore(thumb, label);
       card.onclick = ()=> openVariantsModal(ch);
       glyphGrid.appendChild(card);
     });
@@ -988,12 +1034,13 @@
       paperPreview.appendChild(slot);
     }
   }
-  $('textInput').addEventListener('input', renderPreview);
+  $('textInput').addEventListener('input', ()=>{ renderPreview(); refreshToolbarState(); });
+  $('noteTitleInput').addEventListener('input', refreshToolbarState);
 
   $('downloadImgBtn').onclick = ()=>{
     const hint = $('downloadHint');
     const text = $('textInput').value;
-    if(!text){ hint.style.display='block'; hint.textContent = 'Avval biror narsa yozing.'; return; }
+    if(!text){ showHint(hint, 'Avval biror narsa yozing.', 3000); return; }
 
     const SCALE = 3;
     const LINE_H = 44 * SCALE;
@@ -1086,8 +1133,7 @@
         document.body.removeChild(a);
         setTimeout(()=>URL.revokeObjectURL(url), 3000);
       }, 'image/png');
-      hint.style.display='block';
-      hint.textContent = "Rasm yuklandi — endi uni to'g'ridan-to'g'ri Telegram yoki Instagram'ga rasm/story sifatida yuborishingiz mumkin.";
+      showHint(hint, "Rasm yuklandi — endi uni to'g'ridan-to'g'ri Telegram yoki Instagram'ga rasm/story sifatida yuborishingiz mumkin.", 5000);
     }
   };
 
@@ -1368,8 +1414,7 @@
 
   $('randomFillBtn').onclick = async ()=>{
     const bh = $('backupHint');
-    bh.style.display = 'block';
-    bh.textContent = 'Chizilmoqda...';
+    showHint(bh, 'Chizilmoqda...', 60000);
     await ensureHandwritingFontsLoaded();
     let added = 0;
     for(const ch of RANDOM_CHARSET){
@@ -1384,16 +1429,18 @@
       await storageSet('glyph:'+ch, glyphsData[ch]);
       added++;
       renderGlyphGrid();
-      bh.textContent = `Chizilmoqda... (${added})`;
+      showHint(bh, `Chizilmoqda... (${added})`, 60000);
       await new Promise(r=>setTimeout(r, 0)); // yield so the UI stays responsive
     }
     await storageSet('manifest', manifest);
     renderGlyphGrid();
     renderPreview();
-    bh.textContent = added > 0
+    showHint(bh, added > 0
       ? `${added} ta harfga yangi qalam yo'li variant qo'shildi. Yana bossangiz, yana boshqacha variantlar qo'shiladi.`
-      : "Hech narsa chizib bo'lmadi.";
+      : "Hech narsa chizib bo'lmadi.", 6000);
   };
+
+  refreshToolbarState();
 
 })();
 </script>
