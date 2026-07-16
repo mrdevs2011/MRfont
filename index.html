@@ -45,9 +45,6 @@
     *{transition-duration:0.001ms !important; animation-duration:0.001ms !important;}
   }
 
-  /* ===== HEADER — restructured into two stacked rows so it never
-     scrambles order on narrow screens (was one flex row with
-     space-between across 3 unrelated groups) ===== */
   header{display:flex;flex-direction:column;gap:14px;margin-bottom:20px;}
   .header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
   .title-row{display:flex;align-items:center;gap:14px;min-width:0;}
@@ -63,7 +60,7 @@
   .google-btn{
     display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);
     color:var(--ink);border-radius:999px;padding:8px 16px 8px 8px;font-family:'Work Sans';font-weight:600;
-    font-size:13px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .22s var(--ease), transform .1s;
+    font-size:13px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .22s var(--ease), transform .15s var(--ease);
     white-space:nowrap;
   }
   .google-btn:hover{border-color:var(--seal);}
@@ -71,7 +68,7 @@
   .settings-icon-btn{
     display:none;align-items:center;justify-content:center;width:38px;height:38px;flex-shrink:0;
     border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:50%;
-    cursor:pointer;box-shadow:var(--shadow);transition:border-color .22s var(--ease), color .22s var(--ease), transform .1s;
+    cursor:pointer;box-shadow:var(--shadow);transition:border-color .22s var(--ease), color .22s var(--ease), transform .15s var(--ease);
   }
   .settings-icon-btn:hover{color:var(--seal);border-color:var(--seal);}
   .settings-icon-btn:active{transform:scale(0.94);}
@@ -81,7 +78,6 @@
   }
   .sync-banner.show{display:flex;}
 
-  /* Tabs now live on their own full-width row below the title/auth row */
   nav.tabs{display:flex;gap:3px;background:var(--paper-deep);padding:4px;border-radius:999px;border:1px solid var(--line);overflow-x:auto;max-width:100%;width:100%;}
   nav.tabs button{
     border:none;background:transparent;padding:8px 14px;border-radius:999px;white-space:nowrap;
@@ -94,7 +90,7 @@
 
   @media (max-width:480px){
     header .title-block h1{font-size:23px;}
-    header .title-block p{display:none;} /* tagline drops first on tiny screens instead of wrapping/pushing layout */
+    header .title-block p{display:none;}
     .google-btn{padding:8px 12px 8px 8px;}
   }
 
@@ -113,7 +109,7 @@
   .icon-btn{
     border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:12px;
     padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Work Sans';
-    transition:border-color .22s var(--ease), color .22s var(--ease), transform .1s;white-space:nowrap;
+    transition:border-color .22s var(--ease), color .22s var(--ease), transform .15s var(--ease);white-space:nowrap;
     display:inline-flex;align-items:center;gap:6px;
   }
   .icon-btn:hover{color:var(--ink);border-color:var(--seal);}
@@ -148,9 +144,6 @@
   }
   #textInput:focus{outline:2px solid var(--seal);outline-offset:2px;}
 
-  /* touch-action was fully "none" here, which blocked normal one-finger
-     page scrolling anywhere over this panel on mobile. pan-y keeps
-     vertical page scroll working; pinch-zoom is still handled by JS. */
   .paper-zoom-wrap{position:relative;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);touch-action:pan-y pinch-zoom;min-height:280px;background:var(--card);}
   .paper-zoom-wrap .paper{border:none;box-shadow:none;border-radius:0;transform-origin:0 0;}
   .zoom-controls{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;max-height:0;opacity:0;overflow:hidden;transition:max-height .25s ease, opacity .2s ease, margin-top .25s ease;margin-top:0;}
@@ -195,9 +188,6 @@
   .note-del{border:none;background:transparent;color:var(--ink-soft);font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
   .note-del:hover{color:var(--seal);}
 
-  /* ===== SETTINGS HEADER — regrouped so the primary "+" action stays
-     visually anchored and secondary utilities (backup/import/random)
-     collapse into their own row instead of one long wrapping strip ===== */
   .settings-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:10px;flex-wrap:wrap;}
   .settings-header h2{margin:0;font-size:20px;}
   .settings-sub{color:var(--ink-soft);font-size:13px;margin:2px 0 0;}
@@ -210,6 +200,7 @@
     display:flex;align-items:center;justify-content:center;font-weight:600;transition:transform .22s var(--ease);
   }
   .btn-add:hover{transform:scale(1.06);}
+  .btn-add:active{transform:scale(0.96);transition:transform .1s var(--ease);}
   .glyph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:12px;}
   @media(min-width:1000px){ .glyph-grid{gap:14px;} }
   .glyph-card{
@@ -231,20 +222,30 @@
   .empty-state{grid-column:1/-1;text-align:center;padding:36px 20px;color:var(--ink-soft);border:1px dashed var(--line);border-radius:16px;font-size:14px;opacity:.75;}
   .empty-state svg{display:block;margin:0 auto 10px;opacity:.5;}
 
-  .modal-overlay{position:fixed;inset:0;background:rgba(50,42,26,0.38);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;animation:overlayIn .25s var(--ease);}
-  @keyframes overlayIn{from{opacity:0;}to{opacity:1;}}
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(50,42,26,0.38);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;
+    opacity:1;transition:opacity .2s var(--ease);
+  }
   @keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.98);}to{opacity:1;transform:translateY(0) scale(1);}}
-  .modal-overlay.hidden{display:none;}
-  .modal, .board-modal, .variants-modal{background:var(--card);border-radius:18px;padding:24px;box-shadow:var(--shadow);width:100%;max-width:340px;max-height:88vh;overflow-y:auto;animation:modalIn .3s var(--ease);}
+  .modal-overlay.hidden{opacity:0;pointer-events:none;}
+  .modal-overlay.hidden .modal,
+  .modal-overlay.hidden .board-modal,
+  .modal-overlay.hidden .variants-modal{transform:translateY(6px) scale(.98);}
+  .modal, .board-modal, .variants-modal{
+    background:var(--card);border-radius:18px;padding:24px;box-shadow:var(--shadow);width:100%;max-width:340px;max-height:88vh;overflow-y:auto;
+    transform:translateY(0) scale(1);transition:transform .22s var(--ease);
+  }
   .modal h3, .board-modal h3, .variants-modal h3{margin:0 0 14px;font-size:18px;}
   .modal label{display:block;font-size:12px;color:var(--ink-soft);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em;}
   .modal input{width:100%;font-size:24px;text-align:center;padding:10px;border-radius:12px;border:1px solid var(--line);font-family:'Fraunces';margin-bottom:16px;background:var(--paper);}
   .modal input:focus{outline:2px solid var(--seal);}
-  .btn-primary{width:100%;background:var(--seal);color:#fff;border:none;padding:11px;border-radius:12px;font-family:'Work Sans';font-weight:600;font-size:14px;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .btn-primary{width:100%;background:var(--seal);color:#fff;border:none;padding:11px;border-radius:12px;font-family:'Work Sans';font-weight:600;font-size:14px;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .18s var(--ease), transform .1s var(--ease);}
   .btn-primary:hover{background:var(--seal-dark);}
+  .btn-primary:active{transform:scale(0.98);}
   .btn-primary svg{flex-shrink:0;}
-  .btn-text{width:100%;background:transparent;border:none;color:var(--ink-soft);padding:8px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+  .btn-text{width:100%;background:transparent;border:none;color:var(--ink-soft);padding:8px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:color .18s var(--ease), transform .1s var(--ease);}
   .btn-text:hover{color:var(--ink);}
+  .btn-text:active{transform:scale(0.98);}
   .btn-text svg{flex-shrink:0;}
 
   .board-modal{max-width:360px;}
@@ -264,21 +265,21 @@
   .board-actions .btn-text{grid-column:1/-1;}
   .hint{font-size:12px;color:var(--ink-soft);margin-top:10px;line-height:1.5;max-height:0;opacity:0;overflow:hidden;transition:max-height .25s ease, opacity .2s ease, margin-top .25s ease;margin-top:0;}
   .hint.show{max-height:80px;opacity:1;margin-top:10px;}
-  .board-modal .hint, .modal .hint{max-height:80px;opacity:1;margin-top:10px;} /* static helper text inside modals stays as-is */
+  .board-modal .hint, .modal .hint{max-height:80px;opacity:1;margin-top:10px;}
 
   .variants-modal .variant-row{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;background:var(--paper);}
   .variants-modal .variant-row img{height:36px;width:auto;}
   .variants-modal .variant-del{margin-left:auto;border:none;background:transparent;color:var(--ink-soft);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .variants-modal .variant-del:hover{color:var(--seal);}
 
-  /* ===== ONBOARDING ===== */
   .onboarding-overlay{
     position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;
     background:
       radial-gradient(ellipse at top left, rgba(255,255,255,0.3), transparent 55%),
       var(--paper);
+    opacity:1;transition:opacity .25s var(--ease);
   }
-  .onboarding-overlay.hidden{display:none;}
+  .onboarding-overlay.hidden{opacity:0;pointer-events:none;}
   .onboarding-card{
     width:100%;max-width:380px;background:var(--card);border:1px solid var(--line);border-radius:20px;
     padding:32px 28px 28px;box-shadow:var(--shadow);text-align:center;animation:modalIn .35s var(--ease);
@@ -294,20 +295,20 @@
   .onboarding-google-btn{
     width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid var(--line);
     background:#fff;color:var(--ink);border-radius:16px;padding:13px 16px;font-family:'Work Sans';font-weight:600;
-    font-size:14px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .22s var(--ease), transform .1s;margin-bottom:12px;
+    font-size:14px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .22s var(--ease), transform .15s var(--ease);margin-bottom:12px;
   }
   .onboarding-google-btn:hover{border-color:var(--seal);}
   .onboarding-google-btn:active{transform:scale(0.98);}
   .onboarding-skip{background:transparent;border:none;color:var(--ink-soft);font-size:12px;cursor:pointer;padding:6px;text-decoration:underline;}
   .onboarding-skip:hover{color:var(--ink);}
 
-  /* ===== FULLSCREEN PREVIEW ===== */
   .preview-label-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
   .fullscreen-overlay{
     position:fixed;inset:0;z-index:150;background:var(--paper);
     display:flex;flex-direction:column;padding:14px;
+    opacity:1;transition:opacity .22s var(--ease);
   }
-  .fullscreen-overlay.hidden{display:none;}
+  .fullscreen-overlay.hidden{opacity:0;pointer-events:none;}
   .fs-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
   .fs-zoom-controls{display:flex;align-items:center;gap:8px;}
   .fs-zoom-controls button{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:12px;width:32px;height:32px;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
@@ -325,7 +326,6 @@
   #fullscreenOverlay .hint{max-height:80px;opacity:0;text-align:center;}
   #fullscreenOverlay .hint.show{opacity:1;}
 
-  /* ===== CONFIRM MODAL (replaces window.confirm) ===== */
   .confirm-modal{max-width:320px;text-align:center;}
   .confirm-icon{
     width:44px;height:44px;margin:0 auto 14px;border-radius:50%;
@@ -336,12 +336,13 @@
   .confirm-modal p{margin:0 0 20px;font-size:13px;color:var(--ink-soft);line-height:1.55;}
   .confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .confirm-actions button{width:100%;margin:0;}
-  .btn-danger{background:#b0453a;color:#fff;border:none;padding:11px;border-radius:12px;font-family:'Work Sans';font-weight:600;font-size:13px;cursor:pointer;transition:background .2s;}
+  .btn-danger{background:#b0453a;color:#fff;border:none;padding:11px;border-radius:12px;font-family:'Work Sans';font-weight:600;font-size:13px;cursor:pointer;transition:background .18s var(--ease), transform .1s var(--ease);}
   .btn-danger:hover{background:#943a30;}
-  .btn-secondary{background:var(--paper-deep);color:var(--ink);border:none;padding:11px;border-radius:12px;font-family:'Work Sans';font-weight:600;font-size:13px;cursor:pointer;transition:background .2s;}
+  .btn-danger:active{transform:scale(0.98);}
+  .btn-secondary{background:var(--paper-deep);color:var(--ink);border:none;padding:11px;border-radius:12px;font-family:'Work Sans';font-weight:600;font-size:13px;cursor:pointer;transition:background .18s var(--ease), transform .1s var(--ease);}
   .btn-secondary:hover{background:var(--line);}
+  .btn-secondary:active{transform:scale(0.98);}
 
-  /* ===== TOAST / UNDO BAR ===== */
   #toastStack{
     position:fixed;left:0;right:0;bottom:18px;z-index:200;
     display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;padding:0 14px;
@@ -370,12 +371,12 @@
   .toast .toast-close:hover{color:var(--paper);}
   .toast.error{background:#7a352c;}
 
-  /* ===== GLOBAL LOADER ===== */
   #globalLoader{
-    position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;
+    position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;
     background:rgba(242,234,217,0.72);backdrop-filter:blur(1.5px);
+    opacity:0;pointer-events:none;transition:opacity .18s var(--ease);
   }
-  #globalLoader.show{display:flex;}
+  #globalLoader.show{opacity:1;pointer-events:auto;}
   .loader-spinner{
     width:34px;height:34px;border-radius:50%;
     border:3px solid var(--line);border-top-color:var(--seal);
@@ -398,7 +399,6 @@
     100%{left:100%;}
   }
 
-  /* ===== RICHER ACCOUNT MODAL ===== */
   .account-modal{max-width:320px;}
   .account-profile{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:18px;}
   .account-avatar{
@@ -705,7 +705,6 @@
 
   const $ = (id) => document.getElementById(id);
 
-  // ---- modal coordination: only one modal-type overlay may be visible at a time ----
   const ALL_MODAL_IDS = ['addModal','variantsModal','accountModal','boardModal'];
   function closeAllModals(except){
     ALL_MODAL_IDS.forEach(id=>{
@@ -717,7 +716,6 @@
     $(id).classList.remove('hidden');
   }
 
-  // ---- transient hint helper: shows a message, then fades it out on its own ----
   const hintTimers = {};
   function showHint(el, text, ms){
     if(hintTimers[el.id]) clearTimeout(hintTimers[el.id]);
@@ -726,7 +724,6 @@
     hintTimers[el.id] = setTimeout(()=>{ el.classList.remove('show'); }, ms || 4000);
   }
 
-  // ================= TOASTS (replaces silent failures + gives undo) =================
   function showToast(message, opts){
     opts = opts || {};
     const stack = $('toastStack');
@@ -760,7 +757,6 @@
     return { dismiss };
   }
 
-  // ================= CONFIRM MODAL (replaces window.confirm) =================
   function showConfirm(title, message, okLabel){
     const modal = $('confirmModal');
     $('confirmTitle').textContent = title;
@@ -781,13 +777,11 @@
     });
   }
 
-  // ================= LOADERS =================
   function showLoader(){ $('globalLoader').classList.add('show'); }
   function hideLoader(){ $('globalLoader').classList.remove('show'); }
   function showTopbarLoader(){ $('topbarLoader').classList.add('show'); }
   function hideTopbarLoader(){ $('topbarLoader').classList.remove('show'); }
 
-  // ================= FIREBASE (per-account cloud storage) =================
   const firebaseConfig = {
     apiKey: "AIzaSyCwhg7OAJz5NDRP2g-_jiDiqJeoPBbjPF4",
     authDomain: "font-a8aee.firebaseapp.com",
@@ -802,7 +796,6 @@
   const db = firebase.firestore();
   let currentUser = null;
 
-  // ---- local (per-device) fallback, used before sign-in ----
   async function localGet(key){
     try{
       const r = await window.storage.get(key, false);
@@ -817,7 +810,6 @@
     try{ await window.storage.delete(key, false); }catch(e){}
   }
 
-  // ---- cloud (per Google account), used once signed in ----
   async function cloudGet(key){
     if(!currentUser) return null;
     try{
@@ -843,7 +835,6 @@
     catch(e){ console.error('cloud delete failed', key, e); }
   }
 
-  // ---- dispatcher used everywhere else in the app ----
   async function storageGet(key){ return currentUser ? cloudGet(key) : localGet(key); }
   async function storageSet(key, value){ return currentUser ? cloudSet(key, value) : localSet(key, value); }
   async function storageDelete(key){ return currentUser ? cloudDelete(key) : localDelete(key); }
@@ -851,9 +842,9 @@
   async function migrateLocalDataToCloud(){
     try{
       const cloudManifest = await cloudGet('manifest');
-      if(cloudManifest && cloudManifest.length) return; // this account already has cloud data
+      if(cloudManifest && cloudManifest.length) return;
       const localManifest = await localGet('manifest');
-      if(!localManifest || !localManifest.length) return; // nothing on this device to migrate
+      if(!localManifest || !localManifest.length) return;
       const proceed = await showConfirm(
         "Ma'lumotlarni ko'chirish",
         "Bu qurilmada mahalliy saqlangan harflar/xatlar topildi. Ularni shu Google hisobiga ko'chirib qo'yaymi?",
@@ -883,7 +874,6 @@
     }
   }
 
-  // ---- onboarding (first-run) gate ----
   const ONBOARD_KEY = 'onboarding-complete';
   async function isOnboardingDone(){
     try{
@@ -911,7 +901,7 @@
   }
 
   $('signInBtn').onclick = doGoogleSignIn;
-  $('onboardingGoogleBtn').onclick = doGoogleSignIn; // onAuthStateChanged below will close the overlay on success
+  $('onboardingGoogleBtn').onclick = doGoogleSignIn;
   $('onboardingSkipBtn').onclick = hideOnboarding;
 
   const accountModal = $('accountModal');
@@ -972,7 +962,6 @@
       sb.classList.add('show');
       sb.textContent = "Kirmagansiz — ma'lumotlar faqat shu qurilmada saqlanadi. Google orqali kiring, hisobingizga saqlansin.";
     }
-    // sync state changes are worth a brief note, not a permanent banner
     setTimeout(()=>{ sb.classList.remove('show'); }, 4000);
     manifest = []; glyphsData = {}; notesList = []; currentNoteId = null;
     await loadAll();
@@ -1026,7 +1015,6 @@
 
   function uid(){ return 'n'+Date.now()+Math.random().toString(36).slice(2,7); }
 
-  // ---- toolbar button state: reflect whether there's actually anything to act on ----
   let lastSavedContent = null, lastSavedTitle = null;
   function refreshToolbarState(){
     const hasText = $('textInput').value.trim().length > 0;
@@ -1373,8 +1361,6 @@
       label.className = 'label';
       label.textContent = ch === ' ' ? "(bo'sh joy)" : ch;
       card.appendChild(label);
-      // only show the variant count once there's more than one — a single
-      // variant is the expected baseline, not information worth surfacing
       if(variants.length > 1){
         const count = document.createElement('div');
         count.className = 'variant-count';
@@ -1456,7 +1442,6 @@
   $('textInput').addEventListener('input', ()=>{ renderPreview(); refreshToolbarState(); });
   $('noteTitleInput').addEventListener('input', refreshToolbarState);
 
-  // ---- fullscreen preview ----
   const fsOverlay = $('fullscreenOverlay');
   let fsZoom = 1;
   const FS_MIN = 0.3, FS_MAX = 3;
@@ -1503,15 +1488,11 @@
     const text = $('textInput').value;
     if(!text){ showHint(hint, 'Avval biror narsa yozing.', 3000); return; }
 
-    // Render exactly what's currently visible on screen: same wrapper the
-    // user is looking at (fullscreen or the small preview), at whatever
-    // zoom level it's currently at, so the exported image matches the
-    // on-screen frame's proportions and glyph positions 1:1.
     const isFullscreen = !$('fullscreenOverlay').classList.contains('hidden');
     const wrap = isFullscreen ? $('fsPaperWrap') : $('paperZoomWrap');
     const paper = isFullscreen ? $('fsPaperPreview') : $('paperPreview');
 
-    const EXPORT_SCALE = 3; // resolution multiplier, independent of the export size itself
+    const EXPORT_SCALE = 3;
     const wrapRect = wrap.getBoundingClientRect();
     const outW = Math.max(1, Math.round(wrapRect.width * EXPORT_SCALE));
     const outH = Math.max(1, Math.round(wrapRect.height * EXPORT_SCALE));
@@ -1533,8 +1514,6 @@
       octx.beginPath(); octx.moveTo(22*EXPORT_SCALE,0); octx.lineTo(22*EXPORT_SCALE,outH); octx.stroke();
     }
 
-    // Draw each glyph exactly where it's currently rendered relative to the wrapper —
-    // getBoundingClientRect reflects the live, on-screen position including any zoom transform.
     Array.from(paper.children).forEach(child=>{
       if(!child.classList || !child.classList.contains('glyph-slot')) return;
       const r = child.getBoundingClientRect();
@@ -1626,15 +1605,31 @@
   const RANDOM_CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?'-ʻ".split('');
   const HANDWRITING_FONTS = ['Caveat', 'Shadows Into Light', 'Indie Flower', 'Homemade Apple'];
   const RANDOM_PEN_WIDTH = 9;
+  // Remembers which font was used for each character on the previous
+  // "random fill" click, so every new click is guaranteed to pick a
+  // different font for that character (when more than one font exists),
+  // instead of risking the same one twice in a row.
+  let lastRandomFontForChar = {};
 
+  let fontsPreloaded = false;
   async function ensureHandwritingFontsLoaded(){
+    if(fontsPreloaded) return; // already loaded once — skip the wait on later clicks
     try{
       await Promise.all(HANDWRITING_FONTS.map(f => document.fonts.load(`400 48px "${f}"`)));
       await document.fonts.ready;
     }catch(e){ /* fonts API not critical if it fails */ }
+    fontsPreloaded = true;
   }
 
-  // Rasterize a character, trim to its ink, and return a binary (0/1) grid
+  function pickFontFor(ch){
+    if(HANDWRITING_FONTS.length <= 1) return HANDWRITING_FONTS[0];
+    const prev = lastRandomFontForChar[ch];
+    const choices = prev ? HANDWRITING_FONTS.filter(f => f !== prev) : HANDWRITING_FONTS;
+    const font = choices[Math.floor(Math.random()*choices.length)];
+    lastRandomFontForChar[ch] = font;
+    return font;
+  }
+
   function rasterizeGlyphBinary(ch, fontFamily){
     const sizePx = 130;
     const angle = (Math.random()*8 - 4) * Math.PI/180;
@@ -1656,7 +1651,6 @@
     cx.textBaseline = 'alphabetic';
     cx.fillText(ch, 0, (ascent-descent)/2);
 
-    // trim to ink bounding box
     const data = cx.getImageData(0,0,side,side).data;
     let minX=side,minY=side,maxX=0,maxY=0,found=false;
     for(let y=0;y<side;y++)for(let x=0;x<side;x++){
@@ -1672,7 +1666,6 @@
     maxX=Math.min(side,maxX+pad); maxY=Math.min(side,maxY+pad);
     let w = maxX-minX, h = maxY-minY;
 
-    // cap resolution so thinning stays fast, preserving aspect ratio
     const MAX_DIM = 100;
     const scale = Math.min(1, MAX_DIM / Math.max(w,h));
     const outW = Math.max(3, Math.round(w*scale)), outH = Math.max(3, Math.round(h*scale));
@@ -1687,7 +1680,6 @@
     return { binary, w: outW, h: outH };
   }
 
-  // Zhang-Suen thinning: reduces filled letterforms to a 1px-wide skeleton
   function thinSkeleton(binary, w, h){
     const b = new Uint8Array(binary);
     function fg(x,y){ return (x<0||x>=w||y<0||y>=h) ? 0 : b[y*w+x]; }
@@ -1728,7 +1720,6 @@
     return res;
   }
 
-  // Removes tiny dead-end branches that thinning sometimes leaves near junctions
   function pruneSpurs(b, w, h, maxSpurLen){
     let changed = true, guard = 0;
     while(changed && guard < 50){
@@ -1759,7 +1750,6 @@
     }
   }
 
-  // Walk the 1px skeleton and turn it into polylines (pen strokes)
   function skeletonToStrokes(b, w, h){
     const pts = [];
     const degree = new Map();
@@ -1788,7 +1778,6 @@
       return chain;
     }
 
-    // start at endpoints (degree 1)
     for(const [x,y] of pts){
       if(degree.get(key(x,y))===1 && !visited.has(key(x,y))){
         visited.add(key(x,y));
@@ -1796,7 +1785,6 @@
         if(chain.length>1) rawStrokes.push(chain);
       }
     }
-    // branches out of junctions (degree >= 3)
     for(const [x,y] of pts){
       if(degree.get(key(x,y))>=3){
         visited.add(key(x,y));
@@ -1810,7 +1798,6 @@
         }
       }
     }
-    // leftover closed loops (all degree 2, no endpoints/junctions reached)
     for(const [x,y] of pts){
       if(!visited.has(key(x,y))){
         visited.add(key(x,y));
@@ -1819,7 +1806,6 @@
       }
     }
 
-    // thin out points so strokes aren't overly dense, convert to {x,y}
     return rawStrokes.map(chain=>{
       const out=[]; let last=null;
       chain.forEach(([x,y])=>{
@@ -1904,20 +1890,23 @@
 
   $('randomFillBtn').onclick = async ()=>{
     const bh = $('backupHint');
-    $('randomFillBtn').disabled = true;
-    setTabsEnabled(false);
-    showLoader();
-    showHint(bh, 'Chizilmoqda...', 60000);
+    const btn = $('randomFillBtn');
+    if(btn.disabled) return; // guards against double-clicks while a batch is mid-flight
+    btn.disabled = true;
+
+    // Fonts are only ever awaited on the very first click (ensureHandwritingFontsLoaded
+    // short-circuits after that), so from the second click onward there's no font-loading
+    // wait at all — drawing starts the instant the button is pressed.
     await ensureHandwritingFontsLoaded();
 
-    // 1) Build every glyph fully in memory first — no network calls in this loop,
-    //    so nothing is written to Firebase until we know the whole batch is ready.
+    // 1) Build every glyph fully in memory, synchronously, no awaits in the loop —
+    //    this runs in one go with no artificial delay between characters.
     const MAX_VARIANTS = 6;
-    const pendingWrites = {}; // ch -> variants array to persist
+    const pendingWrites = {};
     let added = 0;
     for(let i=0;i<RANDOM_CHARSET.length;i++){
       const ch = RANDOM_CHARSET[i];
-      const font = HANDWRITING_FONTS[Math.floor(Math.random()*HANDWRITING_FONTS.length)];
+      const font = pickFontFor(ch); // guaranteed different from this char's last random font
       const variant = makeHandwritingVariant(ch, font);
       if(!variant) continue;
       if(!glyphsData[ch]) glyphsData[ch] = [];
@@ -1926,13 +1915,15 @@
       if(!manifest.includes(ch)) manifest.push(ch);
       pendingWrites[ch] = glyphsData[ch];
       added++;
-      // yield to the UI thread only occasionally, not per-char, so this stays fast
-      if(i % 12 === 0) await new Promise(r=>setTimeout(r, 0));
     }
 
-    // 2) Persist the whole batch to Firebase in one go, all requests fired together —
-    //    this finishes in roughly one round-trip instead of ~70 sequential ones, so
-    //    leaving the app mid-way can no longer leave things half-saved.
+    // 2) Show the new handwriting immediately — don't wait on the network save
+    //    before the user sees their letters update.
+    renderGlyphGrid();
+    renderPreview();
+    btn.disabled = false;
+
+    // 3) Persist to storage in the background, all requests fired together.
     let failed = false;
     try{
       const writes = Object.keys(pendingWrites).map(ch => storageSet('glyph:'+ch, pendingWrites[ch]));
@@ -1944,17 +1935,11 @@
       failed = true;
     }
 
-    renderGlyphGrid();
-    renderPreview();
-    hideLoader();
-    setTabsEnabled(true);
-    $('randomFillBtn').disabled = false;
-
     if(failed){
       showToast("Ba'zi harflarni saqlashda xatolik yuz berdi. Qaytadan urinib ko'ring.", { danger:true });
     }
     showHint(bh, added > 0
-      ? `${added} ta harfga yangi qalam yo'li variant qo'shildi. Yana bossangiz, yana boshqacha variantlar qo'shiladi.`
+      ? `${added} ta harfga yangi qalam yo'li variant qo'shildi (har biri boshqa shriftdan). Yana bossangiz, darrov yana boshqacha variantlar qo'shiladi.`
       : "Hech narsa chizib bo'lmadi.", 6000);
   };
 
