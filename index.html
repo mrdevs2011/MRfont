@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MRfont — shaxsiy qo'lyozma shrift</title>
+<title>MRnotes — bulutli qaydlar ombori</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232A2318' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='24' height='24' rx='5' fill='%23FAF4E4'/%3E%3Cpath d='M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z'/%3E%3Cpath d='M13.5 6.9l3.6 3.6'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=Caveat:wght@400;600;700&family=Shadows+Into+Light&family=Indie+Flower&family=Homemade+Apple&display=swap" rel="stylesheet">
@@ -301,6 +301,27 @@
   .onboarding-skip{background:transparent;border:none;color:var(--ink-soft);font-size:12px;cursor:pointer;padding:6px;text-decoration:underline;}
   .onboarding-skip:hover{color:var(--ink);}
 
+  .share-link-row{display:flex;gap:8px;align-items:center;margin:14px 0 4px;}
+  .share-link-row input{flex:1;min-width:0;background:var(--paper-deep);border:1px solid var(--line);border-radius:10px;padding:9px 10px;font-family:'Work Sans';font-size:12.5px;color:var(--ink);}
+  .share-link-row input:focus{outline:2px solid var(--seal);outline-offset:1px;}
+
+  .public-view{display:none;position:fixed;inset:0;z-index:60;overflow-y:auto;
+    background:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.35), transparent 60%),
+      var(--paper);
+  }
+  .public-view.show{display:block;}
+  .pv-hidden{display:none;}
+  .public-wrap{max-width:760px;margin:0 auto;padding:32px 18px 60px;}
+  .public-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+  .public-header .seal-badge{width:34px;height:34px;flex-shrink:0;}
+  .public-brand{margin:0;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);font-weight:600;}
+  .public-header h1{margin:2px 0 0;font-size:22px;word-break:break-word;}
+  .public-footer{display:flex;justify-content:center;margin-top:22px;}
+  .public-footer a{text-decoration:none;}
+  .public-state{text-align:center;padding:70px 20px;color:var(--ink-soft);font-size:14px;}
+  .public-state svg{margin-bottom:10px;color:var(--ink-soft);}
+
   .preview-label-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
   .fullscreen-overlay{
     position:fixed;inset:0;z-index:150;background:var(--paper);
@@ -432,12 +453,12 @@
         <path d="M13.5 6.9l3.6 3.6"/>
       </svg>
     </div>
-    <h2 class="display">Xush kelibsiz, MRfont'ga</h2>
-    <p>O'z qo'lyozmangizni chizib, undan shaxsiy shrift yasang. Google hisobingiz orqali kiring — harflaringiz va xatlaringiz xavfsiz saqlanadi va istalgan qurilmadan kirsangiz ham sizni kutib turadi.</p>
+    <h2 class="display">Xush kelibsiz, MRnotes'ga</h2>
+    <p>Qaydlaringizni bulutda xavfsiz saqlang va istalgan qurilmadan kirsangiz ham sizni kutib turadi. Xohlasangiz, ularni o'zingiz chizgan shaxsiy qo'lyozma shriftida ham yozib qo'yishingiz mumkin.</p>
     <ul class="onboarding-features">
-      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Har bir harfni o'zingiz chizasiz</li>
-      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Matningiz qo'lyozma ko'rinishida chiqadi</li>
-      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Hisobingizga bulutda saqlanadi</li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Qaydlaringiz hisobingizga bulutda saqlanadi</li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Istalgan qurilmadan kirib davom ettirasiz</li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Qo'shimcha: o'z qo'lyozmangizdan shaxsiy shrift yasashingiz mumkin</li>
     </ul>
     <button id="onboardingGoogleBtn" class="onboarding-google-btn">
       <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.98v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.98A9 9 0 0 0 0 9c0 1.45.35 2.82.98 4.03z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .98 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
@@ -457,8 +478,8 @@
           </svg>
         </div>
         <div class="title-block">
-          <h1 class="display">MRfont</h1>
-          <p>O'z qo'lyozmangizdan shaxsiy qo'lyozma yasang</p>
+          <h1 class="display">MRnotes</h1>
+          <p>Qaydlaringiz uchun bulutli ombor</p>
         </div>
       </div>
       <div class="auth-box" id="authBox">
@@ -474,13 +495,13 @@
       </div>
     </div>
     <nav class="tabs">
-      <button id="tabWrite" class="active" title="Yozish">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z"/></svg>
-      </button>
-      <button id="tabNotes" title="Xatlarim">
+      <button id="tabNotes" class="active" title="Qaydlarim">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2"/><polyline points="2.5 7 12 13.5 21.5 7"/></svg>
       </button>
-      <button id="tabSettings" title="Harflar">
+      <button id="tabWrite" title="Yozish">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z"/></svg>
+      </button>
+      <button id="tabSettings" title="Shrift">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
       </button>
     </nav>
@@ -488,19 +509,22 @@
   <div class="sync-banner" id="syncBanner"></div>
 
   <main>
-    <section id="write-view" class="view active">
+    <section id="write-view" class="view">
       <div class="write-toolbar">
-        <input id="noteTitleInput" class="note-title-input" placeholder="Nomsiz xat">
+        <input id="noteTitleInput" class="note-title-input" placeholder="Nomsiz qayd">
         <div class="toolbar-actions">
           <label class="lines-toggle" title="Chiziqlar">
             <input type="checkbox" id="linesToggle" checked>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </label>
-          <button id="newNoteBtn" class="icon-btn icon-only" title="Yangi xat">
+          <button id="newNoteBtn" class="icon-btn icon-only" title="Yangi qayd">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="12" y1="12" x2="12" y2="18"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
           </button>
           <button id="saveNoteBtn" class="icon-btn primary icon-only" disabled title="Saqlash">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          </button>
+          <button id="shareNoteBtn" class="icon-btn icon-only" disabled title="Ommaviy havola olish">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
           </button>
           <button id="downloadImgBtn" class="icon-btn icon-only" disabled title="Rasm sifatida yuklab olish">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -533,16 +557,16 @@
       </div>
     </section>
 
-    <section id="notes-view" class="view">
+    <section id="notes-view" class="view active">
       <div class="notes-header">
         <div>
-          <h2 class="display">Xatlarim</h2>
-          <p class="settings-sub">Saqlangan matnlaringiz</p>
+          <h2 class="display">Qaydlarim</h2>
+          <p class="settings-sub">Bulutda saqlangan qaydlaringiz</p>
         </div>
-        <button id="notesNewBtn" class="btn-add" title="Yangi xat">+</button>
+        <button id="notesNewBtn" class="btn-add" title="Yangi qayd">+</button>
       </div>
       <div id="notesList" class="notes-list">
-        <div class="empty-state"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>Hali hech narsa saqlanmagan. Birinchi xatingizni yozing.</div>
+        <div class="empty-state"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>Hali hech narsa saqlanmagan. Birinchi qaydingizni yozing.</div>
       </div>
     </section>
 
@@ -557,14 +581,10 @@
         </div>
       </div>
       <div class="settings-utility-row">
-        <button id="randomFillBtn" class="icon-btn icon-only" title="Tasodifiy chizish">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-        </button>
         <button id="deleteAllGlyphsBtn" class="icon-btn icon-only danger-hover" title="Barcha harflarni o'chirish" disabled>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
         </button>
       </div>
-      <p class="hint" id="backupHint"></p>
       <div id="glyphGrid" class="glyph-grid">
         <div class="empty-state"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>Hali birorta harf qo'shilmagan. Boshlash uchun + tugmasini bosing.</div>
       </div>
@@ -610,7 +630,7 @@
       </div>
       <div class="account-stat">
         <span class="stat-num" id="accountNoteCount">0</span>
-        <span class="stat-label">Xat</span>
+        <span class="stat-label">Qayd</span>
       </div>
     </div>
     <button id="modalSignOutBtn" class="btn-primary" title="Chiqish">
@@ -663,6 +683,24 @@
   </div>
 </div>
 
+<div id="shareModal" class="modal-overlay hidden">
+  <div class="modal share-modal">
+    <h3 class="display">Qaydni ulashish</h3>
+    <p class="settings-sub">Havolaga ega har kim bu qaydni ko'ra oladi (tahrirlay olmaydi).</p>
+    <div class="share-link-row">
+      <input id="shareLinkInput" readonly>
+      <button id="copyShareLinkBtn" class="icon-btn icon-only" title="Nusxalash">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+    </div>
+    <p class="hint" id="shareHint"></p>
+    <div class="confirm-actions">
+      <button id="stopShareBtn" class="btn-secondary">Ulashishni to'xtatish</button>
+      <button id="closeShareModalBtn" class="btn-primary">Yopish</button>
+    </div>
+  </div>
+</div>
+
 <div id="toastStack"></div>
 
 <div id="fullscreenOverlay" class="fullscreen-overlay hidden">
@@ -688,6 +726,38 @@
   <p class="hint" id="fsDownloadHint"></p>
 </div>
 
+<div id="publicView" class="public-view">
+  <div class="public-wrap">
+    <div class="public-header">
+      <div class="seal-badge">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C68A5F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z"/>
+          <path d="M13.5 6.9l3.6 3.6"/>
+        </svg>
+      </div>
+      <div>
+        <p class="public-brand">MRnotes</p>
+        <h1 class="display" id="publicTitle">Qayd</h1>
+      </div>
+    </div>
+
+    <div id="publicLoading" class="public-state">Yuklanmoqda...</div>
+
+    <div id="publicNotFound" class="public-state pv-hidden">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <p>Bu havola topilmadi yoki ulashish to'xtatilgan.</p>
+    </div>
+
+    <div id="publicContent" class="pv-hidden">
+      <div class="paper lined" id="publicPaper"></div>
+    </div>
+
+    <div class="public-footer">
+      <a href="." class="icon-btn primary">MRnotes'ni ochish</a>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
   let manifest = [];
@@ -702,7 +772,7 @@
 
   const $ = (id) => document.getElementById(id);
 
-  const ALL_MODAL_IDS = ['addModal','variantsModal','accountModal','boardModal'];
+  const ALL_MODAL_IDS = ['addModal','variantsModal','accountModal','boardModal','shareModal'];
   function closeAllModals(except){
     ALL_MODAL_IDS.forEach(id=>{
       if(id !== except) $(id).classList.add('hidden');
@@ -792,6 +862,63 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
   let currentUser = null;
+
+  // ---- Public read-only note view (?share=ID) ----
+  // If the page was opened via a shared link, skip the whole authenticated
+  // app bootstrap entirely and just render the shared note from the public,
+  // unauthenticated Firestore collection.
+  const shareIdParam = new URLSearchParams(location.search).get('share');
+  if(shareIdParam){
+    initPublicView(shareIdParam);
+    return;
+  }
+  async function initPublicView(shareId){
+    $('app').style.display = 'none';
+    $('onboardingOverlay').style.display = 'none';
+    $('publicView').classList.add('show');
+    try{
+      const doc = await db.collection('publicNotes').doc(shareId).get();
+      $('publicLoading').classList.add('pv-hidden');
+      if(!doc.exists){
+        $('publicNotFound').classList.remove('pv-hidden');
+        return;
+      }
+      const data = doc.data();
+      const title = data.title || 'Nomsiz qayd';
+      $('publicTitle').textContent = title;
+      document.title = title + ' — MRnotes';
+      const paper = $('publicPaper');
+      paper.classList.toggle('lined', data.showLines !== false);
+      renderPublicPaper(paper, data.content || '', data.glyphs || {});
+      $('publicContent').classList.remove('pv-hidden');
+    }catch(e){
+      console.error('public view load failed', e);
+      $('publicLoading').classList.add('pv-hidden');
+      $('publicNotFound').classList.remove('pv-hidden');
+    }
+  }
+  function renderPublicPaper(target, text, glyphMap){
+    target.innerHTML = '';
+    for(const ch of text){
+      if(ch === '\n'){
+        const br = document.createElement('div'); br.className='glyph-break'; target.appendChild(br); continue;
+      }
+      if(ch === ' '){
+        const sp = document.createElement('span'); sp.className='glyph-slot space'; target.appendChild(sp); continue;
+      }
+      const slot = document.createElement('span');
+      slot.className = 'glyph-slot';
+      if(glyphMap[ch]){
+        const img = document.createElement('img');
+        img.src = glyphMap[ch];
+        slot.appendChild(img);
+      } else {
+        slot.classList.add('fallback');
+        slot.textContent = ch;
+      }
+      target.appendChild(slot);
+    }
+  }
 
   async function localGet(key){
     try{
@@ -899,7 +1026,7 @@
       if(!localManifest || !localManifest.length) return;
       const proceed = await showConfirm(
         "Ma'lumotlarni ko'chirish",
-        "Bu qurilmada mahalliy saqlangan harflar/xatlar topildi. Ularni shu Google hisobiga ko'chirib qo'yaymi?",
+        "Bu qurilmada mahalliy saqlangan harflar/qaydlar topildi. Ularni shu Google hisobiga ko'chirib qo'yaymi?",
         "Ko'chirish"
       );
       if(!proceed) return;
@@ -1105,6 +1232,7 @@
   function refreshToolbarState(){
     const hasText = $('textInput').value.trim().length > 0;
     $('downloadImgBtn').disabled = !hasText;
+    $('shareNoteBtn').disabled = !hasText;
     $('fullscreenBtn').disabled = !hasText;
     $('zoomControls').classList.toggle('show', hasText);
     const dirty = $('textInput').value !== (lastSavedContent ?? '') || $('noteTitleInput').value !== (lastSavedTitle ?? '');
@@ -1132,7 +1260,7 @@
       if(fresh && lastLoadedNoteUpdatedAt != null && fresh.updatedAt !== lastLoadedNoteUpdatedAt){
         const overwrite = await showConfirm(
           "Ziddiyat aniqlandi",
-          "Bu xat boshqa qurilmada o'zgartirilgan. Ustidan yozsangiz, u yerdagi o'zgarish yo'qoladi.",
+          "Bu qayd boshqa qurilmada o'zgartirilgan. Ustidan yozsangiz, u yerdagi o'zgarish yo'qoladi.",
           "Ustidan yozish"
         );
         if(!overwrite){
@@ -1149,7 +1277,7 @@
     }
     const content = $('textInput').value;
     let title = $('noteTitleInput').value.trim();
-    if(!title) title = content.trim().slice(0,30) || 'Nomsiz xat';
+    if(!title) title = content.trim().slice(0,30) || 'Nomsiz qayd';
     if(!currentNoteId) currentNoteId = uid();
     const now = Date.now();
     const ok1 = await storageSet('note:'+currentNoteId, { id: currentNoteId, title, content, updatedAt: now });
@@ -1158,7 +1286,7 @@
     if(idx>=0) notesList[idx] = entry; else notesList.unshift(entry);
     const ok2 = await storageSet('notes-list', notesList);
     if(ok1===false || ok2===false){
-      showToast("Xatni saqlashda xatolik yuz berdi. Qaytadan urinib ko'ring.", { danger:true });
+      showToast("Qaydni saqlashda xatolik yuz berdi. Qaytadan urinib ko'ring.", { danger:true });
       return;
     }
     $('noteTitleInput').value = title;
@@ -1169,10 +1297,126 @@
     setTimeout(()=>{ setSaveBtnState('default'); }, 1200);
   };
 
+  // ---- Public link sharing ----
+  function generateShareId(){
+    if(window.crypto && crypto.getRandomValues){
+      const bytes = new Uint8Array(16);
+      crypto.getRandomValues(bytes);
+      return Array.from(bytes, b => b.toString(16).padStart(2,'0')).join('');
+    }
+    return 's' + Date.now().toString(36) + Math.random().toString(36).slice(2,12);
+  }
+
+  // Snapshots only the glyphs actually used in this note's text (not the
+  // whole alphabet), so sharing a note doesn't expose the rest of the
+  // author's handwritten font.
+  function buildGlyphSnapshot(content){
+    const map = {};
+    const seen = new Set();
+    for(const ch of content){
+      if(ch === ' ' || ch === '\n' || seen.has(ch)) continue;
+      seen.add(ch);
+      const variants = glyphsData[ch];
+      if(variants && variants.length){
+        const v = variants[Math.floor(Math.random()*variants.length)];
+        map[ch] = variantToDataUrl(v);
+      }
+    }
+    return map;
+  }
+
+  function shareUrlFor(shareId){
+    return `${location.origin}${location.pathname}?share=${shareId}`;
+  }
+
+  function openShareModal(shareId){
+    $('shareLinkInput').value = shareUrlFor(shareId);
+    openModal('shareModal');
+  }
+
+  $('shareNoteBtn').onclick = async ()=>{
+    if(!currentUser){
+      showToast("Ulashish uchun avval Google hisobingiz orqali kiring.", { danger:true, duration:6000 });
+      return;
+    }
+    if(!$('textInput').value.trim()) return;
+    showLoader();
+    try{
+      // Make sure the note is saved first so we have a stable id and the
+      // public snapshot matches what's currently in the editor.
+      await $('saveNoteBtn').onclick();
+      const note = await storageGet('note:'+currentNoteId);
+      if(!note){
+        showToast("Qaydni ulashib bo'lmadi. Qaytadan urinib ko'ring.", { danger:true });
+        return;
+      }
+      const shareId = note.shareId || generateShareId();
+      const glyphs = buildGlyphSnapshot(note.content);
+      await db.collection('publicNotes').doc(shareId).set({
+        title: note.title,
+        content: note.content,
+        showLines: settings.showLines,
+        glyphs,
+        ownerId: currentUser.uid,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      if(note.shareId !== shareId){
+        note.shareId = shareId;
+        await storageSet('note:'+currentNoteId, note);
+      }
+      openShareModal(shareId);
+    }catch(e){
+      console.error('share failed', e);
+      showToast("Havola yaratishda xatolik yuz berdi. Qaytadan urinib ko'ring.", { danger:true });
+    }finally{
+      hideLoader();
+    }
+  };
+
+  $('copyShareLinkBtn').onclick = async ()=>{
+    const input = $('shareLinkInput');
+    try{
+      await navigator.clipboard.writeText(input.value);
+      showHint($('shareHint'), 'Havola nusxalandi.', 3000);
+    }catch(e){
+      input.select();
+      showHint($('shareHint'), "Nusxalash uchun matnni tanlab, Ctrl+C (yoki Cmd+C) bosing.", 4500);
+    }
+  };
+
+  $('stopShareBtn').onclick = async ()=>{
+    if(!currentNoteId) return;
+    const ok = await showConfirm(
+      "Ulashishni to'xtatish",
+      "Havola endi ishlamay qoladi. Uni oldin ko'rgan odamlar qaydni boshqa ko'ra olmaydi.",
+      "To'xtatish"
+    );
+    if(!ok) return;
+    showLoader();
+    try{
+      const note = await storageGet('note:'+currentNoteId);
+      if(note && note.shareId){
+        await db.collection('publicNotes').doc(note.shareId).delete();
+        delete note.shareId;
+        await storageSet('note:'+currentNoteId, note);
+      }
+      $('shareModal').classList.add('hidden');
+      showToast("Ulashish to'xtatildi.");
+    }catch(e){
+      console.error('stop share failed', e);
+      showToast("Xatolik yuz berdi. Qaytadan urinib ko'ring.", { danger:true });
+    }finally{
+      hideLoader();
+    }
+  };
+
+  $('closeShareModalBtn').onclick = ()=> $('shareModal').classList.add('hidden');
+  $('shareModal').onclick = (e)=>{ if(e.target===$('shareModal')) $('shareModal').classList.add('hidden'); };
+
   function renderNotesList(){
     const el = $('notesList');
     if(notesList.length===0){
-      el.innerHTML = '<div class="empty-state"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>Hali hech narsa saqlanmagan. Birinchi xatingizni yozing.</div>';
+      el.innerHTML = '<div class="empty-state"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>Hali hech narsa saqlanmagan. Birinchi qaydingizni yozing.</div>';
       return;
     }
     const sorted = [...notesList].sort((a,b)=>b.updatedAt-a.updatedAt);
@@ -1192,7 +1436,7 @@
       del.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
       del.onclick = async (e)=>{
         e.stopPropagation();
-        const ok = await showConfirm("Xatni o'chirish", `"${n.title}" xati butunlay o'chiriladi.`, "O'chirish");
+        const ok = await showConfirm("Qaydni o'chirish", `"${n.title}" qaydi butunlay o'chiriladi.`, "O'chirish");
         if(!ok) return;
         const fullBackup = await storageGet('note:'+n.id);
         const wasIdx = notesList.findIndex(x=>x.id===n.id);
@@ -1200,7 +1444,7 @@
         await storageSet('notes-list', notesList);
         await storageDelete('note:'+n.id);
         renderNotesList();
-        showToast("Xat o'chirildi.", {
+        showToast("Qayd o'chirildi.", {
           undo: async ()=>{
             if(fullBackup) await storageSet('note:'+n.id, fullBackup);
             const restoreIdx = Math.min(wasIdx, notesList.length);
@@ -1668,7 +1912,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = (($('noteTitleInput').value.trim() || 'xat')).replace(/[^a-zA-Z0-9а-яА-ЯёЁ\u0400-\u04FF ]+/g,'').trim().replace(/\s+/g,'-') + '.png';
+      a.download = (($('noteTitleInput').value.trim() || 'qayd')).replace(/[^a-zA-Z0-9а-яА-ЯёЁ\u0400-\u04FF ]+/g,'').trim().replace(/\s+/g,'-') + '.png';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1731,237 +1975,6 @@
     applyZoom();
   })();
 
-  // ================= RANDOM AUTO-FILL (traces letterforms into real pen strokes) =================
-  const RANDOM_CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?'-ʻ".split('');
-  const HANDWRITING_FONTS = ['Caveat', 'Shadows Into Light', 'Indie Flower', 'Homemade Apple'];
-  const RANDOM_PEN_WIDTH = 9;
-  // Remembers which font was used for each character on the previous
-  // "random fill" click, so every new click is guaranteed to pick a
-  // different font for that character (when more than one font exists),
-  // instead of risking the same one twice in a row.
-  let lastRandomFontForChar = {};
-
-  let fontsPreloaded = false;
-  async function ensureHandwritingFontsLoaded(){
-    if(fontsPreloaded) return; // already loaded once — skip the wait on later clicks
-    try{
-      await Promise.all(HANDWRITING_FONTS.map(f => document.fonts.load(`400 48px "${f}"`)));
-      await document.fonts.ready;
-    }catch(e){ /* fonts API not critical if it fails */ }
-    fontsPreloaded = true;
-  }
-
-  function pickFontFor(ch){
-    if(HANDWRITING_FONTS.length <= 1) return HANDWRITING_FONTS[0];
-    const prev = lastRandomFontForChar[ch];
-    const choices = prev ? HANDWRITING_FONTS.filter(f => f !== prev) : HANDWRITING_FONTS;
-    const font = choices[Math.floor(Math.random()*choices.length)];
-    lastRandomFontForChar[ch] = font;
-    return font;
-  }
-
-  function rasterizeGlyphBinary(ch, fontFamily){
-    const sizePx = 130;
-    const angle = (Math.random()*8 - 4) * Math.PI/180;
-    const measure = document.createElement('canvas').getContext('2d');
-    measure.font = `400 ${sizePx}px "${fontFamily}"`;
-    const m = measure.measureText(ch);
-    const ascent = m.actualBoundingBoxAscent || sizePx*0.78;
-    const descent = m.actualBoundingBoxDescent || sizePx*0.22;
-    const width = Math.max(4, m.width);
-    const side = Math.ceil(Math.max(width, ascent+descent) * 1.7 + 20);
-    const c = document.createElement('canvas');
-    c.width = side; c.height = side;
-    const cx = c.getContext('2d');
-    cx.translate(side/2, side/2);
-    cx.rotate(angle);
-    cx.font = `400 ${sizePx}px "${fontFamily}"`;
-    cx.fillStyle = '#000';
-    cx.textAlign = 'center';
-    cx.textBaseline = 'alphabetic';
-    cx.fillText(ch, 0, (ascent-descent)/2);
-
-    const data = cx.getImageData(0,0,side,side).data;
-    let minX=side,minY=side,maxX=0,maxY=0,found=false;
-    for(let y=0;y<side;y++)for(let x=0;x<side;x++){
-      if(data[(y*side+x)*4+3] > 100){
-        found=true;
-        if(x<minX)minX=x; if(x>maxX)maxX=x;
-        if(y<minY)minY=y; if(y>maxY)maxY=y;
-      }
-    }
-    if(!found) return null;
-    const pad = 4;
-    minX=Math.max(0,minX-pad); minY=Math.max(0,minY-pad);
-    maxX=Math.min(side,maxX+pad); maxY=Math.min(side,maxY+pad);
-    let w = maxX-minX, h = maxY-minY;
-
-    const MAX_DIM = 100;
-    const scale = Math.min(1, MAX_DIM / Math.max(w,h));
-    const outW = Math.max(3, Math.round(w*scale)), outH = Math.max(3, Math.round(h*scale));
-    const small = document.createElement('canvas');
-    small.width = outW; small.height = outH;
-    const sctx = small.getContext('2d');
-    sctx.imageSmoothingEnabled = false;
-    sctx.drawImage(c, minX, minY, w, h, 0, 0, outW, outH);
-    const sdata = sctx.getImageData(0,0,outW,outH).data;
-    const binary = new Uint8Array(outW*outH);
-    for(let i=0;i<outW*outH;i++){ binary[i] = sdata[i*4+3] > 100 ? 1 : 0; }
-    return { binary, w: outW, h: outH };
-  }
-
-  function thinSkeleton(binary, w, h){
-    const b = new Uint8Array(binary);
-    function fg(x,y){ return (x<0||x>=w||y<0||y>=h) ? 0 : b[y*w+x]; }
-    let changed = true;
-    while(changed){
-      changed = false;
-      for(const step of [1,2]){
-        const toDelete = [];
-        for(let y=0;y<h;y++){
-          for(let x=0;x<w;x++){
-            if(!fg(x,y)) continue;
-            const p2=fg(x,y-1), p3=fg(x+1,y-1), p4=fg(x+1,y), p5=fg(x+1,y+1),
-                  p6=fg(x,y+1), p7=fg(x-1,y+1), p8=fg(x-1,y), p9=fg(x-1,y-1);
-            const nb=[p2,p3,p4,p5,p6,p7,p8,p9];
-            const B = nb.reduce((a,v)=>a+v,0);
-            if(B<2||B>6) continue;
-            let A=0;
-            for(let i=0;i<8;i++){ if(nb[i]===0 && nb[(i+1)%8]===1) A++; }
-            if(A!==1) continue;
-            if(step===1){ if(p2*p4*p6!==0 || p4*p6*p8!==0) continue; }
-            else { if(p2*p4*p8!==0 || p2*p6*p8!==0) continue; }
-            toDelete.push(y*w+x);
-          }
-        }
-        if(toDelete.length){ changed = true; toDelete.forEach(i=>{ b[i]=0; }); }
-      }
-    }
-    return b;
-  }
-
-  function neighborsOf(b, w, h, x, y){
-    const res=[];
-    for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++){
-      if(dx===0&&dy===0) continue;
-      const nx=x+dx, ny=y+dy;
-      if(nx>=0&&nx<w&&ny>=0&&ny<h&&b[ny*w+nx]) res.push([nx,ny]);
-    }
-    return res;
-  }
-
-  function pruneSpurs(b, w, h, maxSpurLen){
-    let changed = true, guard = 0;
-    while(changed && guard < 50){
-      changed = false; guard++;
-      const degree = new Map();
-      for(let y=0;y<h;y++) for(let x=0;x<w;x++){
-        if(b[y*w+x]) degree.set(y*w+x, neighborsOf(b,w,h,x,y).length);
-      }
-      for(const [idx,deg] of degree){
-        if(deg!==1) continue;
-        const y0=Math.floor(idx/w), x0=idx-y0*w;
-        let path=[idx], cx=x0, cy=y0, px=-1, py=-1, reachedJunction=false;
-        for(let step=0; step<maxSpurLen; step++){
-          const neigh = neighborsOf(b,w,h,cx,cy).filter(([nx,ny])=>!(nx===px&&ny===py));
-          if(neigh.length===0) break;
-          const [nx,ny] = neigh[0];
-          const nDeg = neighborsOf(b,w,h,nx,ny).length;
-          if(nDeg>=3){ reachedJunction=true; break; }
-          path.push(ny*w+nx);
-          px=cx; py=cy; cx=nx; cy=ny;
-          if(nDeg===1) break;
-        }
-        if(reachedJunction && path.length<=maxSpurLen){
-          path.forEach(i=>{ b[i]=0; });
-          changed = true;
-        }
-      }
-    }
-  }
-
-  function skeletonToStrokes(b, w, h){
-    const pts = [];
-    const degree = new Map();
-    const key = (x,y)=> x+','+y;
-    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
-      if(b[y*w+x]){ pts.push([x,y]); degree.set(key(x,y), neighborsOf(b,w,h,x,y).length); }
-    }
-    if(pts.length===0) return [];
-    const visited = new Set();
-    const rawStrokes = [];
-
-    function traceFrom(x,y,px,py){
-      const chain=[[x,y]];
-      let cx=x, cy=y, lastx=px, lasty=py;
-      while(true){
-        const deg = degree.get(key(cx,cy));
-        if(chain.length>1 && deg>=3) break;
-        const neigh = neighborsOf(b,w,h,cx,cy).filter(([nx,ny])=>!(nx===lastx&&ny===lasty));
-        let next=null;
-        for(const [nx,ny] of neigh){ if(!visited.has(key(nx,ny))){ next=[nx,ny]; break; } }
-        if(!next) break;
-        visited.add(key(next[0],next[1]));
-        chain.push(next);
-        lastx=cx; lasty=cy; cx=next[0]; cy=next[1];
-      }
-      return chain;
-    }
-
-    for(const [x,y] of pts){
-      if(degree.get(key(x,y))===1 && !visited.has(key(x,y))){
-        visited.add(key(x,y));
-        const chain = traceFrom(x,y,-1,-1);
-        if(chain.length>1) rawStrokes.push(chain);
-      }
-    }
-    for(const [x,y] of pts){
-      if(degree.get(key(x,y))>=3){
-        visited.add(key(x,y));
-        const neigh = neighborsOf(b,w,h,x,y);
-        for(const [nx,ny] of neigh){
-          if(!visited.has(key(nx,ny))){
-            visited.add(key(nx,ny));
-            const chain = [[x,y]].concat(traceFrom(nx,ny,x,y));
-            if(chain.length>1) rawStrokes.push(chain);
-          }
-        }
-      }
-    }
-    for(const [x,y] of pts){
-      if(!visited.has(key(x,y))){
-        visited.add(key(x,y));
-        const chain = [[x,y]].concat(traceFrom(x,y,-1,-1));
-        if(chain.length>1) rawStrokes.push(chain);
-      }
-    }
-
-    return rawStrokes.map(chain=>{
-      const out=[]; let last=null;
-      chain.forEach(([x,y])=>{
-        if(!last || Math.hypot(x-last[0], y-last[1]) >= 1.4){ out.push({x,y}); last=[x,y]; }
-      });
-      return out;
-    }).filter(s=>s.length>=2);
-  }
-
-  function strokeLength(s){
-    let len = 0;
-    for(let i=1;i<s.length;i++) len += Math.hypot(s[i].x-s[i-1].x, s[i].y-s[i-1].y);
-    return len;
-  }
-
-  function makeHandwritingVariant(ch, fontFamily){
-    const raster = rasterizeGlyphBinary(ch, fontFamily);
-    if(!raster) return null;
-    const skeleton = thinSkeleton(raster.binary, raster.w, raster.h);
-    pruneSpurs(skeleton, raster.w, raster.h, 5);
-    let strokes = skeletonToStrokes(skeleton, raster.w, raster.h);
-    if(strokes.length > 1) strokes = strokes.filter(s => strokeLength(s) >= 3);
-    if(strokes.length===0) return null;
-    return { strokes, bbox: { x:0, y:0, w: raster.w, h: raster.h }, penWidth: RANDOM_PEN_WIDTH };
-  }
-
   $('deleteAllGlyphsBtn').onclick = async ()=>{
     if(manifest.length===0) return;
     const count = manifest.length;
@@ -2017,66 +2030,6 @@
       t.style.pointerEvents = enabled ? '' : 'none';
     });
   }
-
-  $('randomFillBtn').onclick = async ()=>{
-    const bh = $('backupHint');
-    const btn = $('randomFillBtn');
-    if(btn.disabled) return; // guards against double-clicks while a batch is mid-flight
-    btn.disabled = true;
-
-    // Fonts are only ever awaited on the very first click (ensureHandwritingFontsLoaded
-    // short-circuits after that), so from the second click onward there's no font-loading
-    // wait at all — drawing starts the instant the button is pressed.
-    await ensureHandwritingFontsLoaded();
-
-    // 1) Build every glyph fully in memory, synchronously, no awaits in the loop —
-    //    this runs in one go with no artificial delay between characters.
-    const MAX_VARIANTS = 6;
-    const pendingWrites = {};
-    let added = 0;
-    for(let i=0;i<RANDOM_CHARSET.length;i++){
-      const ch = RANDOM_CHARSET[i];
-      const font = pickFontFor(ch); // guaranteed different from this char's last random font
-      const variant = makeHandwritingVariant(ch, font);
-      if(!variant) continue;
-      if(!glyphsData[ch]) glyphsData[ch] = [];
-      glyphsData[ch].push(variant);
-      if(glyphsData[ch].length > MAX_VARIANTS) glyphsData[ch] = glyphsData[ch].slice(-MAX_VARIANTS);
-      if(!manifest.includes(ch)) manifest.push(ch);
-      pendingWrites[ch] = glyphsData[ch];
-      added++;
-    }
-
-    // 2) Show the new handwriting immediately — don't wait on the network save
-    //    before the user sees their letters update.
-    renderGlyphGrid();
-    renderPreview();
-    btn.disabled = false;
-
-    // 3) Persist to storage in the background. Each write now goes through
-    //    storageSet, which auto-retries transient failures (fix #3) and keeps
-    //    the topbar loader visible + blocks accidental tab close while any
-    //    write is still in flight (fix #1). The manifest write is merged
-    //    against whatever is currently stored, rather than blindly overwritten,
-    //    so a concurrent addition from another device isn't lost (fix #2).
-    let failed = false;
-    try{
-      const writes = Object.keys(pendingWrites).map(ch => storageSet('glyph:'+ch, pendingWrites[ch]));
-      writes.push(mergeManifestAdd(Object.keys(pendingWrites)));
-      const results = await Promise.all(writes);
-      failed = results.some(r => r === false);
-    }catch(e){
-      console.error('random fill batch save failed', e);
-      failed = true;
-    }
-
-    if(failed){
-      showToast("Ba'zi harflarni saqlashda xatolik yuz berdi. Internetni tekshirib, tugmani yana bosing — muvaffaqiyatli saqlanmagan harflar qayta uriniladi.", { danger:true, duration:7000 });
-    }
-    showHint(bh, added > 0
-      ? `${added} ta harfga yangi qalam yo'li variant qo'shildi (har biri boshqa shriftdan). Yana bossangiz, darrov yana boshqacha variantlar qo'shiladi.`
-      : "Hech narsa chizib bo'lmadi.", 6000);
-  };
 
   function setSaveBtnState(state){
     const btn = $('saveNoteBtn');
