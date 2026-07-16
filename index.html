@@ -969,9 +969,15 @@
       }
       const slot = document.createElement('span');
       slot.className = 'glyph-slot';
-      if(glyphMap[ch]){
+      // Backward-compatible: older shared links stored a single dataUrl per
+      // character; newer ones store an array of variant dataUrls so a fresh
+      // random one can be picked per occurrence, just like the live editor.
+      const entry = glyphMap[ch];
+      const variants = Array.isArray(entry) ? entry : (entry ? [entry] : null);
+      if(variants && variants.length){
+        const src = variants[Math.floor(Math.random()*variants.length)];
         const img = document.createElement('img');
-        img.src = glyphMap[ch];
+        img.src = src;
         slot.appendChild(img);
       } else {
         slot.classList.add('fallback');
@@ -1367,12 +1373,12 @@
       notesList = nl || [];
       // Perf fix: this used to fetch each glyph one at a time in a sequential
       // for-loop — with `await` inside the loop, every glyph meant a full
-      // extra network round-trip before the next one even started. If you'd
-      // used "Random fill" (which can add ~70 characters), that was ~70
-      // sequential round-trips before the page showed anything, which is
-      // exactly why the orange loading bar spun for so long on every visit.
-      // Fetching them all in parallel means the wait is roughly as long as
-      // ONE round-trip, not seventy.
+      // extra network round-trip before the next one even started. With a
+      // full alphabet of glyphs (~70 characters), that was ~70 sequential
+      // round-trips before the page showed anything, which is exactly why
+      // the orange loading bar spun for so long on every visit. Fetching
+      // them all in parallel means the wait is roughly as long as ONE
+      // round-trip, not seventy.
       glyphsData = {};
       const glyphResults = await Promise.all(manifest.map(ch => storageGet('glyph:'+ch)));
       manifest.forEach((ch, i) => { if(glyphResults[i]) glyphsData[ch] = glyphResults[i]; });
@@ -1499,6 +1505,11 @@
   // Snapshots only the glyphs actually used in this note's text (not the
   // whole alphabet), so sharing a note doesn't expose the rest of the
   // author's handwritten font.
+  // Stores ALL variant images for each character used in the note (not just
+  // one randomly-picked variant). This lets the public view pick a fresh
+  // random variant per occurrence at render time, the same way the live
+  // editor does — otherwise every instance of a repeated letter in a shared
+  // note would look identical, unlike what was actually written.
   function buildGlyphSnapshot(content){
     const map = {};
     const seen = new Set();
@@ -1507,8 +1518,7 @@
       seen.add(ch);
       const variants = glyphsData[ch];
       if(variants && variants.length){
-        const v = variants[Math.floor(Math.random()*variants.length)];
-        map[ch] = variantToDataUrl(v);
+        map[ch] = variants.map(v => variantToDataUrl(v));
       }
     }
     return map;
