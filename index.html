@@ -1277,10 +1277,11 @@
         // Keep the Google button visible while anonymous, relabeled as an
         // "upgrade" action — this way the UI never implies the user has
         // actually registered, and tapping it now runs the link/switch flow
-        // instead of a plain sign-in.
+        // instead of a plain sign-in. No gear/settings icon yet — that only
+        // appears once there's a real account.
         $('signInBtn').style.display = 'flex';
         $('signInBtn').title = "Google bilan bog'lash";
-        $('accountSettingsBtn').style.display = 'flex';
+        $('accountSettingsBtn').style.display = 'none';
       } else {
         $('signInBtn').style.display = 'none';
         $('accountSettingsBtn').style.display = 'flex';
