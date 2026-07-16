@@ -12,28 +12,25 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
   :root{
-    --paper: #E9DDC3;
-    --paper-deep: #DFCFA9;
-    --ink: #2A2318;
-    --ink-soft: #5C503C;
-    --line: #C2AE84;
-    --seal: #8C2F26;
-    --seal-dark: #6E241D;
+    --paper: #F2EAD9;
+    --paper-deep: #E9DFC8;
+    --ink: #3E3626;
+    --ink-soft: #857A64;
+    --line: #E1D6BC;
+    --seal: #C68A5F;
+    --seal-dark: #B0754C;
     --brass: #A8823A;
-    --pine: #3B5240;
-    --card: #FAF4E4;
-    --shadow: 0 6px 18px rgba(30,24,12,0.16);
+    --pine: #8FA888;
+    --card: #FBF8F0;
+    --shadow: 0 4px 16px rgba(80,64,36,0.08);
+    --ease: cubic-bezier(.4,0,.2,1);
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background:
-      radial-gradient(ellipse at top left, rgba(255,255,255,0.3), transparent 55%),
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.35), transparent 60%),
       var(--paper);
-    background-image:
-      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/></svg>"),
-      radial-gradient(ellipse at top left, rgba(255,255,255,0.3), transparent 55%);
-    background-blend-mode:overlay, normal, normal;
     color:var(--ink);
     font-family:'Work Sans', sans-serif;
     min-height:100vh;
@@ -66,7 +63,7 @@
   .google-btn{
     display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);
     color:var(--ink);border-radius:999px;padding:8px 16px 8px 8px;font-family:'Work Sans';font-weight:600;
-    font-size:13px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s, transform .1s;
+    font-size:13px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .22s var(--ease), transform .1s;
     white-space:nowrap;
   }
   .google-btn:hover{border-color:var(--seal);}
@@ -74,12 +71,12 @@
   .settings-icon-btn{
     display:none;align-items:center;justify-content:center;width:38px;height:38px;flex-shrink:0;
     border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:50%;
-    cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s, color .15s, transform .1s;
+    cursor:pointer;box-shadow:var(--shadow);transition:border-color .22s var(--ease), color .22s var(--ease), transform .1s;
   }
   .settings-icon-btn:hover{color:var(--seal);border-color:var(--seal);}
   .settings-icon-btn:active{transform:scale(0.94);}
   .sync-banner{
-    display:none;align-items:center;gap:8px;background:var(--card);border:1px dashed var(--line);border-radius:8px;
+    display:none;align-items:center;gap:8px;background:var(--card);border:1px dashed var(--line);border-radius:12px;
     padding:8px 12px;font-size:12px;color:var(--ink-soft);margin-bottom:14px;
   }
   .sync-banner.show{display:flex;}
@@ -90,8 +87,10 @@
     border:none;background:transparent;padding:8px 14px;border-radius:999px;white-space:nowrap;
     font-family:'Work Sans';font-size:13px;font-weight:600;color:var(--ink-soft);cursor:pointer;
     transition:background .2s, color .2s;flex:1 1 auto;
+    display:flex;align-items:center;justify-content:center;gap:7px;
   }
   nav.tabs button.active{background:var(--ink);color:var(--paper);}
+  nav.tabs button svg{flex-shrink:0;}
 
   @media (max-width:480px){
     header .title-block h1{font-size:23px;}
@@ -100,7 +99,8 @@
   }
 
   .view{display:none;}
-  .view.active{display:block;}
+  .view.active{display:block;animation:viewIn .35s var(--ease);}
+  @keyframes viewIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
   .panel-label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);margin:0 0 8px;font-weight:600;}
 
   .write-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
@@ -111,9 +111,10 @@
   .note-title-input:focus{outline:none;border-bottom-color:var(--seal);}
   .toolbar-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
   .icon-btn{
-    border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:8px;
+    border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:12px;
     padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Work Sans';
-    transition:border-color .15s, color .15s, transform .1s;white-space:nowrap;
+    transition:border-color .22s var(--ease), color .22s var(--ease), transform .1s;white-space:nowrap;
+    display:inline-flex;align-items:center;gap:6px;
   }
   .icon-btn:hover{color:var(--ink);border-color:var(--seal);}
   .icon-btn:active{transform:scale(0.96);}
@@ -122,9 +123,12 @@
   .icon-btn:disabled{opacity:.4;cursor:not-allowed;transform:none !important;}
   .icon-btn:disabled:hover{color:var(--ink-soft);border-color:var(--line);}
   .icon-btn.primary:disabled{background:var(--paper-deep);border-color:var(--line);color:var(--ink-soft);}
+  .icon-btn.icon-only{padding:9px;width:36px;height:36px;justify-content:center;}
+  .icon-btn svg{flex-shrink:0;display:block;}
 
   .lines-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);white-space:nowrap;}
   .lines-toggle input{accent-color:var(--seal);}
+  .lines-toggle svg{flex-shrink:0;}
 
   .write-grid{display:grid;grid-template-columns:1fr;gap:18px;}
   @media(min-width:760px){.write-grid{grid-template-columns:1fr 1.15fr;}}
@@ -137,7 +141,7 @@
 
   #textInput{
     width:100%;min-height:280px;resize:vertical;
-    background:var(--card);border:1px solid var(--line);border-radius:10px;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
     padding:16px;font-family:'Work Sans';font-size:15px;color:var(--ink);
     box-shadow:var(--shadow);line-height:1.6;
   }
@@ -146,17 +150,19 @@
   /* touch-action was fully "none" here, which blocked normal one-finger
      page scrolling anywhere over this panel on mobile. pan-y keeps
      vertical page scroll working; pinch-zoom is still handled by JS. */
-  .paper-zoom-wrap{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:var(--shadow);touch-action:pan-y pinch-zoom;min-height:280px;background:var(--card);}
+  .paper-zoom-wrap{position:relative;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);touch-action:pan-y pinch-zoom;min-height:280px;background:var(--card);}
   .paper-zoom-wrap .paper{border:none;box-shadow:none;border-radius:0;transform-origin:0 0;}
   .zoom-controls{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;max-height:0;opacity:0;overflow:hidden;transition:max-height .25s ease, opacity .2s ease, margin-top .25s ease;margin-top:0;}
   .zoom-controls.show{max-height:60px;opacity:1;margin-top:8px;}
-  .zoom-controls button{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;flex-shrink:0;}
+  .zoom-controls button{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:12px;width:32px;height:32px;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
   .zoom-controls button:hover{color:var(--ink);border-color:var(--seal);}
   .zoom-controls span{font-size:12px;color:var(--ink-soft);min-width:40px;text-align:center;}
+  .zoom-controls button.zoom-reset{width:32px;}
+  .zoom-controls button svg{flex-shrink:0;}
 
   .paper{
     background:var(--card);
-    border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);
+    border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
     min-height:280px;padding:16px 16px 16px 24px;position:relative;
     display:flex;flex-wrap:wrap;align-content:flex-start;line-height:44px;
   }
@@ -178,14 +184,14 @@
   @media(min-width:700px){ .notes-list{grid-template-columns:1fr 1fr;} }
   @media(min-width:1100px){ .notes-list{grid-template-columns:1fr 1fr 1fr;} }
   .note-card{
-    background:var(--card);border:1px solid var(--line);border-left:3px solid var(--line);border-radius:10px;padding:14px 16px;
+    background:var(--card);border:1px solid var(--line);border-left:3px solid var(--line);border-radius:16px;padding:14px 16px;
     box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;
-    transition:border-color .15s, transform .12s;
+    transition:border-color .22s var(--ease), transform .2s var(--ease);
   }
   .note-card:hover{border-color:var(--seal);border-left-color:var(--seal);transform:translateX(2px);}
   .note-card .nc-title{font-family:'Fraunces';font-size:16px;font-style:italic;margin:0 0 3px;}
   .note-card .nc-meta{font-size:11px;color:var(--ink-soft);}
-  .note-del{border:none;background:transparent;color:var(--ink-soft);font-size:18px;cursor:pointer;flex-shrink:0;}
+  .note-del{border:none;background:transparent;color:var(--ink-soft);font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
   .note-del:hover{color:var(--seal);}
 
   /* ===== SETTINGS HEADER — regrouped so the primary "+" action stays
@@ -200,15 +206,15 @@
     width:46px;height:46px;border-radius:50%;border:none;flex-shrink:0;
     background:radial-gradient(circle at 35% 30%, #b5493a, var(--seal) 60%, var(--seal-dark));
     color:#fff;font-size:22px;line-height:1;cursor:pointer;box-shadow:var(--shadow);
-    display:flex;align-items:center;justify-content:center;font-weight:600;transition:transform .15s;
+    display:flex;align-items:center;justify-content:center;font-weight:600;transition:transform .22s var(--ease);
   }
   .btn-add:hover{transform:scale(1.06);}
   .glyph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:12px;}
   @media(min-width:1000px){ .glyph-grid{gap:14px;} }
   .glyph-card{
-    background:var(--card);border:1px solid var(--line);border-radius:10px;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
     padding:10px 8px 8px;text-align:center;position:relative;box-shadow:var(--shadow);cursor:pointer;
-    transition:border-color .15s, transform .12s;
+    transition:border-color .22s var(--ease), transform .2s var(--ease);
   }
   .glyph-card:hover{border-color:var(--seal);transform:translateY(-2px);}
   .glyph-card:active{transform:translateY(0);}
@@ -219,30 +225,36 @@
   .glyph-card .del{
     position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;
     background:var(--ink);color:var(--paper);border:none;font-size:12px;cursor:pointer;line-height:1;
+    display:flex;align-items:center;justify-content:center;
   }
-  .empty-state{grid-column:1/-1;text-align:center;padding:36px 20px;color:var(--ink-soft);border:1px dashed var(--line);border-radius:10px;font-size:14px;opacity:.75;}
+  .empty-state{grid-column:1/-1;text-align:center;padding:36px 20px;color:var(--ink-soft);border:1px dashed var(--line);border-radius:16px;font-size:14px;opacity:.75;}
   .empty-state svg{display:block;margin:0 auto 10px;opacity:.5;}
 
-  .modal-overlay{position:fixed;inset:0;background:rgba(38,34,28,0.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;}
+  .modal-overlay{position:fixed;inset:0;background:rgba(50,42,26,0.38);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;animation:overlayIn .25s var(--ease);}
+  @keyframes overlayIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.98);}to{opacity:1;transform:translateY(0) scale(1);}}
   .modal-overlay.hidden{display:none;}
-  .modal, .board-modal, .variants-modal{background:var(--card);border-radius:14px;padding:24px;box-shadow:var(--shadow);width:100%;max-width:340px;max-height:88vh;overflow-y:auto;}
+  .modal, .board-modal, .variants-modal{background:var(--card);border-radius:18px;padding:24px;box-shadow:var(--shadow);width:100%;max-width:340px;max-height:88vh;overflow-y:auto;animation:modalIn .3s var(--ease);}
   .modal h3, .board-modal h3, .variants-modal h3{margin:0 0 14px;font-size:18px;}
   .modal label{display:block;font-size:12px;color:var(--ink-soft);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em;}
-  .modal input{width:100%;font-size:24px;text-align:center;padding:10px;border-radius:8px;border:1px solid var(--line);font-family:'Fraunces';margin-bottom:16px;background:var(--paper);}
+  .modal input{width:100%;font-size:24px;text-align:center;padding:10px;border-radius:12px;border:1px solid var(--line);font-family:'Fraunces';margin-bottom:16px;background:var(--paper);}
   .modal input:focus{outline:2px solid var(--seal);}
-  .btn-primary{width:100%;background:var(--seal);color:#fff;border:none;padding:11px;border-radius:8px;font-family:'Work Sans';font-weight:600;font-size:14px;cursor:pointer;margin-bottom:8px;}
+  .btn-primary{width:100%;background:var(--seal);color:#fff;border:none;padding:11px;border-radius:12px;font-family:'Work Sans';font-weight:600;font-size:14px;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px;}
   .btn-primary:hover{background:var(--seal-dark);}
-  .btn-text{width:100%;background:transparent;border:none;color:var(--ink-soft);padding:8px;font-size:13px;cursor:pointer;}
+  .btn-primary svg{flex-shrink:0;}
+  .btn-text{width:100%;background:transparent;border:none;color:var(--ink-soft);padding:8px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
   .btn-text:hover{color:var(--ink);}
+  .btn-text svg{flex-shrink:0;}
 
   .board-modal{max-width:360px;}
   .board-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
   .board-header span{font-family:'Fraunces';font-size:20px;font-style:italic;}
   .board-header .board-actions-mini{display:flex;gap:6px;}
-  .board-header .btn-mini{border:none;background:var(--paper-deep);color:var(--ink-soft);border-radius:6px;padding:5px 9px;font-size:12px;cursor:pointer;}
+  .board-header .btn-mini{border:none;background:var(--paper-deep);color:var(--ink-soft);border-radius:9px;padding:7px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .board-header .btn-mini:hover{color:var(--ink);}
+  .board-header .btn-mini svg{flex-shrink:0;}
   #drawCanvas{
-    width:100%;aspect-ratio:1/1;background:#fff;border:1px solid var(--line);border-radius:8px;
+    width:100%;aspect-ratio:1/1;background:#fff;border:1px solid var(--line);border-radius:12px;
     touch-action:none;cursor:crosshair;
     background-image:linear-gradient(to right, #f1eee6 1px, transparent 1px), linear-gradient(to bottom, #f1eee6 1px, transparent 1px);
     background-size:20% 20%;
@@ -253,9 +265,9 @@
   .hint.show{max-height:80px;opacity:1;margin-top:10px;}
   .board-modal .hint, .modal .hint{max-height:80px;opacity:1;margin-top:10px;} /* static helper text inside modals stays as-is */
 
-  .variants-modal .variant-row{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;background:var(--paper);}
+  .variants-modal .variant-row{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;background:var(--paper);}
   .variants-modal .variant-row img{height:36px;width:auto;}
-  .variants-modal .variant-del{margin-left:auto;border:none;background:transparent;color:var(--ink-soft);font-size:16px;cursor:pointer;}
+  .variants-modal .variant-del{margin-left:auto;border:none;background:transparent;color:var(--ink-soft);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .variants-modal .variant-del:hover{color:var(--seal);}
 
   /* ===== ONBOARDING ===== */
@@ -267,8 +279,8 @@
   }
   .onboarding-overlay.hidden{display:none;}
   .onboarding-card{
-    width:100%;max-width:380px;background:var(--card);border:1px solid var(--line);border-radius:16px;
-    padding:32px 28px 28px;box-shadow:var(--shadow);text-align:center;
+    width:100%;max-width:380px;background:var(--card);border:1px solid var(--line);border-radius:20px;
+    padding:32px 28px 28px;box-shadow:var(--shadow);text-align:center;animation:modalIn .35s var(--ease);
   }
   .onboarding-icon{
     width:64px;height:64px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;
@@ -280,8 +292,8 @@
   .onboarding-features li svg{flex-shrink:0;margin-top:1px;color:var(--seal);}
   .onboarding-google-btn{
     width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid var(--line);
-    background:#fff;color:var(--ink);border-radius:10px;padding:13px 16px;font-family:'Work Sans';font-weight:600;
-    font-size:14px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s, transform .1s;margin-bottom:12px;
+    background:#fff;color:var(--ink);border-radius:16px;padding:13px 16px;font-family:'Work Sans';font-weight:600;
+    font-size:14px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .22s var(--ease), transform .1s;margin-bottom:12px;
   }
   .onboarding-google-btn:hover{border-color:var(--seal);}
   .onboarding-google-btn:active{transform:scale(0.98);}
@@ -297,14 +309,15 @@
   .fullscreen-overlay.hidden{display:none;}
   .fs-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
   .fs-zoom-controls{display:flex;align-items:center;gap:8px;}
-  .fs-zoom-controls button{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;flex-shrink:0;}
+  .fs-zoom-controls button{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:12px;width:32px;height:32px;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
   .fs-zoom-controls button:hover{color:var(--ink);border-color:var(--seal);}
   .fs-zoom-controls span{font-size:12px;color:var(--ink-soft);min-width:40px;text-align:center;}
-  .fs-reset-btn{width:auto !important;padding:0 10px;}
+  .fs-zoom-controls button svg{flex-shrink:0;}
+  .fs-reset-btn{width:32px !important;padding:0 !important;}
   .fs-toolbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
   .fs-paper-wrap{
     flex:1;min-height:0;overflow:hidden;position:relative;
-    border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);
+    border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
     touch-action:pan-y pinch-zoom;background:var(--card);
   }
   .fs-paper-wrap .paper{border:none;box-shadow:none;border-radius:0;transform-origin:0 0;min-height:100%;}
@@ -316,7 +329,7 @@
 <div id="onboardingOverlay" class="onboarding-overlay hidden">
   <div class="onboarding-card">
     <div class="onboarding-icon">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8C2F26" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#C68A5F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
         <path d="M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z"/>
         <path d="M13.5 6.9l3.6 3.6"/>
       </svg>
@@ -340,7 +353,7 @@
     <div class="header-top">
       <div class="title-row">
         <div class="seal-badge">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8C2F26" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C68A5F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z"/>
             <path d="M13.5 6.9l3.6 3.6"/>
           </svg>
@@ -351,9 +364,8 @@
         </div>
       </div>
       <div class="auth-box" id="authBox">
-        <button id="signInBtn" class="google-btn">
+        <button id="signInBtn" class="google-btn" title="Google orqali kirish">
           <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.98v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.98A9 9 0 0 0 0 9c0 1.45.35 2.82.98 4.03z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .98 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
-          <span>Kirish</span>
         </button>
         <button id="accountSettingsBtn" class="settings-icon-btn" style="display:none;" title="Sozlamalar">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -364,9 +376,15 @@
       </div>
     </div>
     <nav class="tabs">
-      <button id="tabWrite" class="active">Yozish</button>
-      <button id="tabNotes">Xatlarim</button>
-      <button id="tabSettings">Harflar</button>
+      <button id="tabWrite" class="active" title="Yozish">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z"/></svg>
+      </button>
+      <button id="tabNotes" title="Xatlarim">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2"/><polyline points="2.5 7 12 13.5 21.5 7"/></svg>
+      </button>
+      <button id="tabSettings" title="Harflar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+      </button>
     </nav>
   </header>
   <div class="sync-banner" id="syncBanner"></div>
@@ -376,10 +394,19 @@
       <div class="write-toolbar">
         <input id="noteTitleInput" class="note-title-input" placeholder="Nomsiz xat">
         <div class="toolbar-actions">
-          <label class="lines-toggle"><input type="checkbox" id="linesToggle" checked> Chiziqlar</label>
-          <button id="newNoteBtn" class="icon-btn">Yangi</button>
-          <button id="saveNoteBtn" class="icon-btn primary" disabled>Saqlash</button>
-          <button id="downloadImgBtn" class="icon-btn" disabled>Rasm sifatida yuklab olish</button>
+          <label class="lines-toggle" title="Chiziqlar">
+            <input type="checkbox" id="linesToggle" checked>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </label>
+          <button id="newNoteBtn" class="icon-btn icon-only" title="Yangi xat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="12" y1="12" x2="12" y2="18"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          </button>
+          <button id="saveNoteBtn" class="icon-btn primary icon-only" disabled title="Saqlash">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          </button>
+          <button id="downloadImgBtn" class="icon-btn icon-only" disabled title="Rasm sifatida yuklab olish">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
         </div>
       </div>
       <div class="write-grid">
@@ -390,7 +417,9 @@
         <div>
           <div class="preview-label-row">
             <p class="panel-label" style="margin-bottom:0;">Qog'ozdagi ko'rinishi</p>
-            <button id="fullscreenBtn" class="icon-btn" disabled title="To'liq ekranda ko'rish">⤢ To'liq ekran</button>
+            <button id="fullscreenBtn" class="icon-btn icon-only" disabled title="To'liq ekranda ko'rish">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+            </button>
           </div>
           <div class="paper-zoom-wrap" id="paperZoomWrap">
             <div class="paper lined" id="paperPreview">
@@ -398,10 +427,10 @@
             </div>
           </div>
           <div class="zoom-controls" id="zoomControls">
-            <button id="zoomOutBtn">−</button>
+            <button id="zoomOutBtn" title="Kichraytirish"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
             <span id="zoomLabel">100%</span>
-            <button id="zoomInBtn">+</button>
-            <button id="zoomResetBtn" style="width:auto;padding:0 10px;">Asl holat</button>
+            <button id="zoomInBtn" title="Kattalashtirish"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+            <button id="zoomResetBtn" class="zoom-reset" title="Asl holat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
           </div>
           <p class="hint" id="downloadHint"></p>
         </div>
@@ -432,7 +461,9 @@
         </div>
       </div>
       <div class="settings-utility-row">
-        <button id="randomFillBtn" class="icon-btn">Random</button>
+        <button id="randomFillBtn" class="icon-btn icon-only" title="Tasodifiy chizish">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+        </button>
       </div>
       <p class="hint" id="backupHint"></p>
       <div id="glyphGrid" class="glyph-grid">
@@ -447,8 +478,12 @@
     <h3 class="display">Yangi harf</h3>
     <label>Klaviaturadagi belgi</label>
     <input id="charInput" maxlength="1" autocomplete="off" placeholder="masalan: a">
-    <button id="openBoardBtn" class="btn-primary">Chizishga o'tish →</button>
-    <button id="closeModalBtn" class="btn-text">Bekor qilish</button>
+    <button id="openBoardBtn" class="btn-primary" title="Chizishga o'tish">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+    <button id="closeModalBtn" class="btn-text" title="Bekor qilish">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   </div>
 </div>
 
@@ -456,16 +491,25 @@
   <div class="variants-modal">
     <h3 class="display">"<span id="variantsCharLabel"></span>" uchun variantlar</h3>
     <div id="variantsList"></div>
-    <button id="addVariantBtn" class="btn-primary">Yangi variant chizish</button>
-    <button id="closeVariantsBtn" class="btn-text">Yopish</button>
+    <button id="addVariantBtn" class="btn-primary" title="Yangi variant chizish">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z"/></svg>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+    <button id="closeVariantsBtn" class="btn-text" title="Yopish">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   </div>
 </div>
 
 <div id="accountModal" class="modal-overlay hidden">
   <div class="modal">
     <h3 class="display">Hisob</h3>
-    <button id="modalSignOutBtn" class="btn-primary">Chiqish</button>
-    <button id="closeAccountModalBtn" class="btn-text">Yopish</button>
+    <button id="modalSignOutBtn" class="btn-primary" title="Chiqish">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </button>
+    <button id="closeAccountModalBtn" class="btn-text" title="Yopish">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   </div>
 </div>
 
@@ -474,15 +518,23 @@
     <div class="board-header">
       <span id="boardCharLabel">a</span>
       <div class="board-actions-mini">
-        <button id="undoBoardBtn" class="btn-mini">Undo</button>
-        <button id="clearBoardBtn" class="btn-mini">Tozalash</button>
+        <button id="undoBoardBtn" class="btn-mini" title="Undo">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+        </button>
+        <button id="clearBoardBtn" class="btn-mini" title="Tozalash">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </button>
       </div>
     </div>
     <canvas id="drawCanvas" width="320" height="320"></canvas>
     <p class="hint">Sichqoncha yoki barmog'ingiz bilan belgini chizing. Barcha harflar yozuvda bir xil balandlikda chiqadi.</p>
     <div class="board-actions">
-      <button id="saveGlyphBtn" class="btn-primary">Saqlash</button>
-      <button id="cancelBoardBtn" class="btn-text">Bekor qilish</button>
+      <button id="saveGlyphBtn" class="btn-primary" title="Saqlash">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+      <button id="cancelBoardBtn" class="btn-text" title="Bekor qilish">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
   </div>
 </div>
@@ -490,14 +542,18 @@
 <div id="fullscreenOverlay" class="fullscreen-overlay hidden">
   <div class="fs-toolbar">
     <div class="fs-zoom-controls">
-      <button id="fsZoomOutBtn">−</button>
+      <button id="fsZoomOutBtn" title="Kichraytirish"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
       <span id="fsZoomLabel">100%</span>
-      <button id="fsZoomInBtn">+</button>
-      <button id="fsZoomResetBtn" class="fs-reset-btn">Asl holat</button>
+      <button id="fsZoomInBtn" title="Kattalashtirish"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <button id="fsZoomResetBtn" class="fs-reset-btn" title="Asl holat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
     </div>
     <div class="fs-toolbar-actions">
-      <button id="fsDownloadBtn" class="icon-btn primary">Rasm sifatida saqlash</button>
-      <button id="fsCloseBtn" class="icon-btn">✕ Yopish</button>
+      <button id="fsDownloadBtn" class="icon-btn primary icon-only" title="Rasm sifatida saqlash">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+      <button id="fsCloseBtn" class="icon-btn icon-only" title="Yopish">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
   </div>
   <div class="fs-paper-wrap" id="fsPaperWrap">
@@ -767,9 +823,9 @@
     await storageSet('notes-list', notesList);
     $('noteTitleInput').value = title;
     lastSavedContent = content; lastSavedTitle = title;
-    $('saveNoteBtn').textContent = 'Saqlandi ✓';
+    setSaveBtnState('saved');
     refreshToolbarState();
-    setTimeout(()=>{ $('saveNoteBtn').textContent = 'Saqlash'; }, 1200);
+    setTimeout(()=>{ setSaveBtnState('default'); }, 1200);
   };
 
   function renderNotesList(){
@@ -791,7 +847,8 @@
         </div>`;
       const del = document.createElement('button');
       del.className = 'note-del';
-      del.textContent = '×';
+      del.title = "O'chirish";
+      del.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
       del.onclick = async (e)=>{
         e.stopPropagation();
         notesList = notesList.filter(x=>x.id!==n.id);
@@ -860,7 +917,8 @@
       row.appendChild(label);
       const del = document.createElement('button');
       del.className = 'variant-del';
-      del.textContent = '×';
+      del.title = "O'chirish";
+      del.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
       del.onclick = async ()=>{
         list.splice(i,1);
         if(list.length===0){
@@ -1042,8 +1100,8 @@
       }
       const del = document.createElement('button');
       del.className = 'del';
-      del.textContent = '×';
       del.title = "O'chirish";
+      del.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
       del.onclick = async (e)=>{
         e.stopPropagation();
         delete glyphsData[ch];
@@ -1547,6 +1605,18 @@
       ? `${added} ta harfga yangi qalam yo'li variant qo'shildi. Yana bossangiz, yana boshqacha variantlar qo'shiladi.`
       : "Hech narsa chizib bo'lmadi.", 6000);
   };
+
+  function setSaveBtnState(state){
+    const btn = $('saveNoteBtn');
+    if(state==='saved'){
+      btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+      btn.title = 'Saqlandi';
+    } else {
+      btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>';
+      btn.title = 'Saqlash';
+    }
+  }
+  setSaveBtnState('default');
 
   refreshToolbarState();
 
