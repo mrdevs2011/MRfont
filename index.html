@@ -306,6 +306,12 @@
   }
   .onboarding-google-btn:hover{border-color:var(--seal);}
   .onboarding-google-btn:active{transform:scale(0.98);}
+  .onboarding-anon-btn{
+    width:100%;background:transparent;border:none;color:var(--ink-soft);border-radius:12px;padding:10px;
+    font-family:'Inter';font-weight:600;font-size:13px;cursor:pointer;transition:color .18s var(--ease), transform .1s var(--ease);
+  }
+  .onboarding-anon-btn:hover{color:var(--ink);}
+  .onboarding-anon-btn:active{transform:scale(0.98);}
 
   .share-link-row{display:flex;gap:8px;align-items:center;margin:14px 0 4px;}
   .share-link-row input{flex:1;min-width:0;background:var(--paper-deep);border:1px solid var(--line);border-radius:10px;padding:9px 10px;font-family:'Inter';font-size:12.5px;color:var(--ink);}
@@ -468,6 +474,7 @@
       <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.98v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.98A9 9 0 0 0 0 9c0 1.45.35 2.82.98 4.03z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .98 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
       Google orqali ro'yxatdan o'tish
     </button>
+    <button id="onboardingAnonBtn" class="onboarding-anon-btn">Hisobsiz davom etish</button>
   </div>
 </div>
 <div id="app">
@@ -639,6 +646,10 @@
         <span class="stat-label">Qayd</span>
       </div>
     </div>
+    <button id="modalLinkGoogleBtn" class="btn-primary" title="Google bilan bog'lash" style="display:none;">
+      <svg width="16" height="16" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.98v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.98A9 9 0 0 0 0 9c0 1.45.35 2.82.98 4.03z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .98 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
+      <span style="font-size:13px;">Google bilan bog'lash</span>
+    </button>
     <button id="modalSignOutBtn" class="btn-primary" title="Chiqish">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       <span style="font-size:13px;">Chiqish</span>
@@ -926,18 +937,19 @@
     }
   }
 
+  const LOCAL_PREFIX = 'mrnotes:';
   async function localGet(key){
     try{
-      const r = await window.storage.get(key, false);
-      return r ? JSON.parse(r.value) : null;
+      const raw = window.localStorage.getItem(LOCAL_PREFIX + key);
+      return raw != null ? JSON.parse(raw) : null;
     }catch(e){ return null; }
   }
   async function localSet(key, value){
-    try{ await window.storage.set(key, JSON.stringify(value), false); return true; }
+    try{ window.localStorage.setItem(LOCAL_PREFIX + key, JSON.stringify(value)); return true; }
     catch(e){ console.error('local set failed', key, e); return false; }
   }
   async function localDelete(key){
-    try{ await window.storage.delete(key, false); }catch(e){}
+    try{ window.localStorage.removeItem(LOCAL_PREFIX + key); }catch(e){}
   }
 
   async function cloudGet(key){
@@ -1032,7 +1044,7 @@
       if(!localManifest || !localManifest.length) return;
       const proceed = await showConfirm(
         "Ma'lumotlarni ko'chirish",
-        "Bu qurilmada mahalliy saqlangan harflar/qaydlar topildi. Ularni shu Google hisobiga ko'chirib qo'yaymi?",
+        "Bu qurilmada mahalliy saqlangan harflar/qaydlar topildi. Ularni shu hisobga ko'chirib qo'yaymi?",
         "Ko'chirish"
       );
       if(!proceed) return;
@@ -1051,7 +1063,7 @@
       const localSettings = await localGet('settings');
       if(localSettings) await cloudSet('settings', localSettings);
       hideLoader();
-      showToast("Mahalliy ma'lumotlar Google hisobingizga muvaffaqiyatli ko'chirildi.");
+      showToast("Mahalliy ma'lumotlar hisobingizga muvaffaqiyatli ko'chirildi.");
     }catch(e){
       console.error('migration failed', e);
       hideLoader();
@@ -1062,18 +1074,26 @@
   const ONBOARD_KEY = 'onboarding-complete';
   async function isOnboardingDone(){
     try{
-      const r = await window.storage.get(ONBOARD_KEY, false);
-      return r ? JSON.parse(r.value) === true : false;
+      const raw = window.localStorage.getItem(LOCAL_PREFIX + ONBOARD_KEY);
+      return raw ? JSON.parse(raw) === true : false;
     }catch(e){ return false; }
   }
   async function markOnboardingDone(){
-    try{ await window.storage.set(ONBOARD_KEY, JSON.stringify(true), false); }catch(e){}
+    try{ window.localStorage.setItem(LOCAL_PREFIX + ONBOARD_KEY, JSON.stringify(true)); }catch(e){}
   }
   async function hideOnboarding(){
     await markOnboardingDone();
     $('onboardingOverlay').classList.add('hidden');
   }
   function doGoogleSignIn(){
+    // If we're already in an anonymous session, don't just replace it with a
+    // fresh signInWithPopup call — that would silently strand the anonymous
+    // user's cloud data under its old uid. Instead try to *link* the Google
+    // credential onto the existing anonymous account so the same uid (and
+    // all its data) simply gains a Google identity.
+    if(currentUser && currentUser.isAnonymous){
+      return doGoogleLinkOrSwitch();
+    }
     const provider = new firebase.auth.GoogleAuthProvider();
     showTopbarLoader();
     return auth.signInWithPopup(provider).catch(err=>{
@@ -1103,14 +1123,105 @@
     });
   }
 
+  // Anonymous -> Google upgrade flow.
+  //
+  // Two possible outcomes once the user picks a Google account in the popup:
+  //
+  // 1) That Google account has never been used with MRnotes before -> linking
+  //    succeeds. The uid does NOT change, so every note/glyph/setting already
+  //    stored under the anonymous uid is automatically still there — nothing
+  //    needs to be copied. The account simply "gains" a Google identity.
+  //
+  // 2) That Google account already has its own MRnotes account -> linking is
+  //    rejected with auth/credential-already-in-use (Firebase won't let one
+  //    Google identity be attached to two separate uids). In that case we
+  //    sign in to the *pre-existing* Google account instead — its data is
+  //    what ends up on this device — and the anonymous profile we were using
+  //    is abandoned (best-effort deleted in the background) since it has
+  //    nowhere left to go.
+  function doGoogleLinkOrSwitch(){
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const anonUser = currentUser; // capture before auth state can shift under us
+    showTopbarLoader();
+    return anonUser.linkWithPopup(provider).then(()=>{
+      showToast("Google hisobingiz ulandi. Barcha qaydlaringiz saqlanib qoldi.");
+    }).catch(err=>{
+      console.error(err);
+      if(err && (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request')) return;
+      if(err && (err.code === 'auth/credential-already-in-use' || err.code === 'auth/email-already-in-use')){
+        const cred = err.credential;
+        if(!cred){
+          showToast("Bu Google hisob boshqa profilga bog'langan, lekin ulanishni yakunlab bo'lmadi. Qaytadan urinib ko'ring.", { danger:true, duration:7000 });
+          return;
+        }
+        const oldAnonUid = anonUser.uid;
+        return auth.signInWithCredential(cred).then(()=>{
+          showToast("Bu Google hisobda avvaldan qaydlar bor edi — ular shu qurilmaga yuklandi.");
+          cleanupAbandonedAnonymousAccount(oldAnonUid, anonUser);
+        }).catch(err2=>{
+          console.error(err2);
+          showToast("Hisobga kirishda xatolik yuz berdi. Qaytadan urinib ko'ring.", { danger:true, duration:6000 });
+        });
+      }
+      if(err && err.code === 'auth/popup-blocked'){
+        showToast("Brauzeringiz pop-up oynani blokladi. Manzil satridagi pop-up belgisini bosib ruxsat bering, so'ng qaytadan urinib ko'ring.", { danger:true, duration:7000 });
+        return;
+      }
+      if(err && err.code === 'auth/network-request-failed'){
+        showToast("Internet aloqasi bilan muammo bo'ldi. Ulanishni tekshirib, qaytadan urinib ko'ring.", { danger:true, duration:6000 });
+        return;
+      }
+      const codeSuffix = err && err.code ? ` (${err.code})` : '';
+      showToast("Ulanishda xatolik yuz berdi" + codeSuffix + ". Qaytadan urinib ko'ring.", { danger:true, duration:6000 });
+    }).finally(()=>{
+      hideTopbarLoader();
+    });
+  }
+
+  // Best-effort cleanup of the anonymous profile we just abandoned in favor
+  // of a pre-existing Google account. Never blocks the UI and never surfaces
+  // errors to the user — if it fails, the orphaned data just sits unused.
+  async function cleanupAbandonedAnonymousAccount(anonUid, anonUserRef){
+    try{
+      const snap = await db.collection('users').doc(anonUid).collection('data').get();
+      if(!snap.empty){
+        const batch = db.batch();
+        snap.forEach(doc=> batch.delete(doc.ref));
+        await batch.commit();
+      }
+    }catch(e){ console.warn('anon data cleanup skipped', e); }
+    try{ await anonUserRef.delete(); }
+    catch(e){ console.warn('anon auth cleanup skipped', e); }
+  }
+  function doAnonymousSignIn(){
+    showTopbarLoader();
+    return auth.signInAnonymously().catch(err=>{
+      console.error(err);
+      if(err && err.code === 'auth/operation-not-allowed'){
+        showToast("Hisobsiz kirish hozircha yoqilmagan. Birozdan so'ng qaytadan urinib ko'ring.", { danger:true, duration:6000 });
+        return;
+      }
+      if(err && err.code === 'auth/network-request-failed'){
+        showToast("Internet aloqasi bilan muammo bo'ldi. Ulanishni tekshirib, qaytadan urinib ko'ring.", { danger:true, duration:6000 });
+        return;
+      }
+      const codeSuffix = err && err.code ? ` (${err.code})` : '';
+      showToast("Kirishda xatolik yuz berdi" + codeSuffix + ". Qaytadan urinib ko'ring.", { danger:true, duration:6000 });
+    }).finally(()=>{
+      hideTopbarLoader();
+    });
+  }
+
   $('signInBtn').onclick = doGoogleSignIn;
   $('onboardingGoogleBtn').onclick = doGoogleSignIn;
+  $('onboardingAnonBtn').onclick = doAnonymousSignIn;
 
   const accountModal = $('accountModal');
   function renderAccountProfile(){
     const box = $('accountProfile');
     if(!currentUser){ box.innerHTML = ''; return; }
-    const name = currentUser.displayName || currentUser.email || 'Foydalanuvchi';
+    const isAnon = !!currentUser.isAnonymous;
+    const name = isAnon ? 'Mehmon' : (currentUser.displayName || currentUser.email || 'Foydalanuvchi');
     const initial = name.trim().charAt(0).toUpperCase() || '?';
     let avatarHtml;
     if(currentUser.photoURL){
@@ -1122,13 +1233,24 @@
       ${avatarHtml}
       <p class="account-name">${escapeHtml(name)}</p>
       ${currentUser.email ? `<p class="account-email">${escapeHtml(currentUser.email)}</p>` : ''}
+      ${isAnon ? `<p class="account-email">Hisobsiz rejim — Google bilan bog'lanmagan</p>` : ''}
     `;
     $('accountGlyphCount').textContent = manifest.length;
     $('accountNoteCount').textContent = notesList.length;
+    $('modalLinkGoogleBtn').style.display = isAnon ? 'flex' : 'none';
   }
+  $('modalLinkGoogleBtn').onclick = doGoogleSignIn;
   $('accountSettingsBtn').onclick = ()=>{ renderAccountProfile(); openModal('accountModal'); };
   $('closeAccountModalBtn').onclick = ()=> accountModal.classList.add('hidden');
   $('modalSignOutBtn').onclick = async ()=>{
+    if(currentUser && currentUser.isAnonymous){
+      const ok = await showConfirm(
+        "Hisobsiz profildan chiqasizmi?",
+        "Bu profil Google bilan bog'lanmagan. Chiqsangiz, ushbu qaydlar va harflarga qayta kira olmaysiz.",
+        "Baribir chiqish"
+      );
+      if(!ok) return;
+    }
     showTopbarLoader();
     try{
       await auth.signOut();
@@ -1151,14 +1273,27 @@
     currentUser = user;
     const sb = $('syncBanner');
     if(user){
-      $('signInBtn').style.display = 'none';
-      $('accountSettingsBtn').style.display = 'flex';
+      if(user.isAnonymous){
+        // Keep the Google button visible while anonymous, relabeled as an
+        // "upgrade" action — this way the UI never implies the user has
+        // actually registered, and tapping it now runs the link/switch flow
+        // instead of a plain sign-in.
+        $('signInBtn').style.display = 'flex';
+        $('signInBtn').title = "Google bilan bog'lash";
+        $('accountSettingsBtn').style.display = 'flex';
+      } else {
+        $('signInBtn').style.display = 'none';
+        $('accountSettingsBtn').style.display = 'flex';
+      }
       sb.classList.add('show');
-      sb.textContent = `Bulutga saqlanmoqda: ${user.displayName || user.email}`;
+      sb.textContent = user.isAnonymous
+        ? "Hisobsiz rejimda ishlayapsiz — ma'lumotlar shu profilga bulutda saqlanadi."
+        : `Bulutga saqlanmoqda: ${user.displayName || user.email}`;
       await hideOnboarding();
       await migrateLocalDataToCloud();
     } else {
       $('signInBtn').style.display = 'flex';
+      $('signInBtn').title = "Google orqali kirish";
       $('accountSettingsBtn').style.display = 'none';
       accountModal.classList.add('hidden');
       sb.classList.add('show');
