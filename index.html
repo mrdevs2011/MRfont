@@ -234,6 +234,24 @@
   .empty-state{grid-column:1/-1;text-align:center;padding:36px 20px;color:var(--ink-soft);border:1px dashed var(--line);border-radius:16px;font-size:14px;opacity:.75;}
   .empty-state svg{display:block;margin:0 auto 10px;opacity:.5;}
 
+  /* Skeleton loading placeholders — shown while cards/notes/glyphs are
+     being fetched, so the layout appears instantly instead of a blank
+     gap before real content pops in. */
+  .skeleton-line{
+    border-radius:6px;
+    background:linear-gradient(90deg, var(--paper-deep) 25%, var(--line) 37%, var(--paper-deep) 63%);
+    background-size:400% 100%;
+    animation:skeletonShimmer 1.4s ease infinite;
+  }
+  @keyframes skeletonShimmer{0%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+  @media (prefers-reduced-motion: reduce){ .skeleton-line{animation:none;opacity:.6;} }
+  .note-card.skeleton-card{cursor:default;}
+  .note-card.skeleton-card:hover{border-color:var(--line);background:var(--card);}
+  .note-card.skeleton-card .skel-body{flex:1;min-width:0;}
+  .glyph-card.skeleton-card{cursor:default;}
+  .glyph-card.skeleton-card:hover{border-color:var(--line);background:var(--card);}
+  .glyph-card.skeleton-card .thumb .skeleton-line{width:34px;height:34px;border-radius:8px;}
+
   .modal-overlay{
     position:fixed;inset:0;background:rgba(15,30,45,0.42);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;
     opacity:1;transition:opacity .2s var(--ease);
@@ -562,7 +580,9 @@
         <button id="notesNewBtn" class="btn-add" title="Yangi qayd">+</button>
       </div>
       <div id="notesList" class="notes-list">
-        <div class="empty-state"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>Hali hech narsa saqlanmagan. Birinchi qaydingizni yozing.</div>
+        <div class="note-card skeleton-card"><div class="skel-body"><div class="skeleton-line" style="height:14px;width:65%;margin-bottom:9px;"></div><div class="skeleton-line" style="height:10px;width:35%;"></div></div></div>
+        <div class="note-card skeleton-card"><div class="skel-body"><div class="skeleton-line" style="height:14px;width:50%;margin-bottom:9px;"></div><div class="skeleton-line" style="height:10px;width:30%;"></div></div></div>
+        <div class="note-card skeleton-card"><div class="skel-body"><div class="skeleton-line" style="height:14px;width:72%;margin-bottom:9px;"></div><div class="skeleton-line" style="height:10px;width:38%;"></div></div></div>
       </div>
     </section>
 
@@ -582,7 +602,10 @@
         </button>
       </div>
       <div id="glyphGrid" class="glyph-grid">
-        <div class="empty-state"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>Hali birorta harf qo'shilmagan. Boshlash uchun + tugmasini bosing.</div>
+        <div class="glyph-card skeleton-card"><div class="thumb"><div class="skeleton-line"></div></div><div class="skeleton-line" style="height:10px;width:60%;margin:0 auto;"></div></div>
+        <div class="glyph-card skeleton-card"><div class="thumb"><div class="skeleton-line"></div></div><div class="skeleton-line" style="height:10px;width:60%;margin:0 auto;"></div></div>
+        <div class="glyph-card skeleton-card"><div class="thumb"><div class="skeleton-line"></div></div><div class="skeleton-line" style="height:10px;width:60%;margin:0 auto;"></div></div>
+        <div class="glyph-card skeleton-card"><div class="thumb"><div class="skeleton-line"></div></div><div class="skeleton-line" style="height:10px;width:60%;margin:0 auto;"></div></div>
       </div>
     </section>
   </main>
@@ -863,6 +886,34 @@
   function hideLoader(){ $('globalLoader').classList.remove('show'); }
   function showTopbarLoader(){ $('topbarLoader').classList.add('show'); }
   function hideTopbarLoader(){ $('topbarLoader').classList.remove('show'); }
+
+  // Skeleton placeholders: rendered the instant a fetch starts, so the
+  // notes/settings tabs show card-shaped shimmer instead of an empty gap
+  // (or stale content) while manifest/notes-list/glyphs load from storage.
+  function renderNotesSkeleton(count){
+    const el = $('notesList');
+    if(!el) return;
+    const widths = [65,50,72,45,60];
+    let html = '';
+    for(let i=0;i<(count||4);i++){
+      const w = widths[i % widths.length];
+      html += `<div class="note-card skeleton-card"><div class="skel-body">
+        <div class="skeleton-line" style="height:14px;width:${w}%;margin-bottom:9px;"></div>
+        <div class="skeleton-line" style="height:10px;width:${Math.max(24,w-30)}%;"></div>
+      </div></div>`;
+    }
+    el.innerHTML = html;
+  }
+  function renderGlyphSkeleton(count){
+    const el = $('glyphGrid');
+    if(!el) return;
+    let html = '';
+    for(let i=0;i<(count||8);i++){
+      html += `<div class="glyph-card skeleton-card"><div class="thumb"><div class="skeleton-line"></div></div>
+        <div class="skeleton-line" style="height:10px;width:60%;margin:0 auto;"></div></div>`;
+    }
+    el.innerHTML = html;
+  }
 
   const firebaseConfig = {
     apiKey: "AIzaSyCwhg7OAJz5NDRP2g-_jiDiqJeoPBbjPF4",
@@ -1306,6 +1357,8 @@
 
   async function loadAll(){
     showTopbarLoader();
+    renderNotesSkeleton();
+    renderGlyphSkeleton();
     try{
       // Perf fix: manifest, settings, and notes-list are independent of each
       // other — fetch them together instead of one after another.
