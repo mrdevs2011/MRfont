@@ -358,28 +358,26 @@
   .public-state svg{margin-bottom:10px;color:var(--ink-soft);}
 
   .preview-label-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
-  .fullscreen-overlay{
+
+  /* Write tab now becomes fullscreen automatically — no separate
+     "fullscreen" button/overlay needed. When body.write-fullscreen is
+     set, the header, sync banner and bottom tab bar are hidden and
+     #write-view expands to cover the whole viewport like the old
+     fullscreen overlay used to. */
+  body.write-fullscreen header,
+  body.write-fullscreen .sync-banner,
+  body.write-fullscreen nav.tabs{display:none !important;}
+  body.write-fullscreen #app{padding:0;max-width:none;}
+  body.write-fullscreen main{display:block;}
+  body.write-fullscreen #write-view.active{
     position:fixed;inset:0;z-index:150;background:var(--paper);
-    display:flex;flex-direction:column;padding:14px;
-    opacity:1;transition:opacity .22s var(--ease);
+    display:flex;flex-direction:column;
+    padding:calc(14px + env(safe-area-inset-top)) 14px calc(14px + env(safe-area-inset-bottom));
+    animation:none;
   }
-  .fullscreen-overlay.hidden{opacity:0;pointer-events:none;}
-  .fs-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
-  .fs-zoom-controls{display:flex;align-items:center;gap:8px;}
-  .fs-zoom-controls button{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);border-radius:12px;width:32px;height:32px;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-  .fs-zoom-controls button:hover{color:var(--ink);border-color:var(--seal);}
-  .fs-zoom-controls span{font-size:12px;color:var(--ink-soft);min-width:40px;text-align:center;}
-  .fs-zoom-controls button svg{flex-shrink:0;}
-  .fs-reset-btn{width:32px !important;padding:0 !important;}
-  .fs-toolbar-actions{display:flex;gap:8px;flex-wrap:wrap;}
-  .fs-paper-wrap{
-    flex:1;min-height:0;overflow:hidden;position:relative;
-    border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
-    touch-action:pan-y pinch-zoom;background:var(--card);
-  }
-  .fs-paper-wrap .paper{border:none;box-shadow:none;border-radius:0;transform-origin:0 0;min-height:100%;}
-  #fullscreenOverlay .hint{max-height:80px;opacity:0;text-align:center;}
-  #fullscreenOverlay .hint.show{opacity:1;}
+  body.write-fullscreen #write-view.active .write-toolbar{flex-shrink:0;}
+  body.write-fullscreen #write-view.active .paper-zoom-wrap{flex:1;min-height:0;}
+  .write-close-btn{margin-right:2px;}
 
   .confirm-modal{max-width:320px;text-align:center;}
   .confirm-icon{
@@ -535,15 +533,15 @@
   <main>
     <section id="write-view" class="view">
       <div class="write-toolbar">
+        <button id="writeCloseBtn" class="icon-btn icon-only write-close-btn" title="Yopish">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
         <input id="noteTitleInput" class="note-title-input" placeholder="Nomsiz qayd">
         <div class="toolbar-actions">
           <label class="lines-toggle" title="Chiziqlar">
             <input type="checkbox" id="linesToggle" checked>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </label>
-          <button id="fullscreenBtn" class="icon-btn icon-only" disabled title="To'liq ekranda ko'rish">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-          </button>
           <button id="newNoteBtn" class="icon-btn icon-only" title="Yangi qayd">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="12" y1="12" x2="12" y2="18"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
           </button>
@@ -740,29 +738,6 @@
 </div>
 
 <div id="toastStack"></div>
-
-<div id="fullscreenOverlay" class="fullscreen-overlay hidden">
-  <div class="fs-toolbar">
-    <div class="fs-zoom-controls">
-      <button id="fsZoomOutBtn" title="Kichraytirish"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-      <span id="fsZoomLabel">100%</span>
-      <button id="fsZoomInBtn" title="Kattalashtirish"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-      <button id="fsZoomResetBtn" class="fs-reset-btn" title="Asl holat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
-    </div>
-    <div class="fs-toolbar-actions">
-      <button id="fsDownloadBtn" class="icon-btn primary icon-only" title="Rasm sifatida saqlash">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      </button>
-      <button id="fsCloseBtn" class="icon-btn icon-only" title="Yopish">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-  </div>
-  <div class="fs-paper-wrap" id="fsPaperWrap">
-    <div class="paper lined" id="fsPaperPreview"></div>
-  </div>
-  <p class="hint" id="fsDownloadHint"></p>
-</div>
 
 <div id="publicView" class="public-view">
   <div class="public-wrap">
@@ -1401,17 +1376,18 @@
       tabs[k].classList.toggle('active', k===name);
       views[k].classList.toggle('active', k===name);
     });
+    document.body.classList.toggle('write-fullscreen', name==='write');
     if(name==='notes') renderNotesList();
     if(name==='settings') renderGlyphGrid();
   }
   tabs.write.onclick = ()=>showView('write');
   tabs.notes.onclick = ()=>showView('notes');
   tabs.settings.onclick = ()=>showView('settings');
+  $('writeCloseBtn').onclick = ()=>showView('notes');
 
   $('linesToggle').onchange = async (e)=>{
     settings.showLines = e.target.checked;
     $('paperPreview').classList.toggle('lined', settings.showLines);
-    $('fsPaperPreview').classList.toggle('lined', settings.showLines);
     await storageSet('settings', settings);
   };
 
@@ -1426,7 +1402,6 @@
     const hasText = $('textInput').value.trim().length > 0;
     $('downloadImgBtn').disabled = !hasText;
     $('shareNoteBtn').disabled = !hasText;
-    $('fullscreenBtn').disabled = !hasText;
     $('zoomControls').classList.toggle('show', hasText);
     const dirty = $('textInput').value !== (lastSavedContent ?? '') || $('noteTitleInput').value !== (lastSavedTitle ?? '');
     $('saveNoteBtn').disabled = !hasText && !currentNoteId ? true : !dirty;
@@ -1996,9 +1971,6 @@
   function renderPreview(){
     const text = $('textInput').value;
     renderInto($('paperPreview'), text);
-    if(!$('fullscreenOverlay').classList.contains('hidden')){
-      renderInto($('fsPaperPreview'), text);
-    }
   }
   // Typing fast used to trigger a full preview DOM rebuild on every single
   // keystroke. With the image cache above each rebuild is cheap on its own,
@@ -2014,55 +1986,17 @@
   $('textInput').addEventListener('input', ()=>{ scheduleRenderPreview(); refreshToolbarState(); });
   $('noteTitleInput').addEventListener('input', refreshToolbarState);
 
-  const fsOverlay = $('fullscreenOverlay');
-  let fsZoom = 1;
-  const FS_MIN = 0.3, FS_MAX = 3;
-  function applyFsZoom(){
-    const fp = $('fsPaperPreview');
-    fp.style.transform = `scale(${fsZoom})`;
-    fp.style.width = (100/fsZoom) + '%';
-    $('fsZoomLabel').textContent = Math.round(fsZoom*100) + '%';
-  }
-  function setFsZoom(z){ fsZoom = Math.min(FS_MAX, Math.max(FS_MIN, z)); applyFsZoom(); }
-  function openFullscreen(){
-    if($('textInput').value.length===0) return;
-    closeAllModals();
-    $('fsPaperPreview').classList.toggle('lined', settings.showLines);
-    renderInto($('fsPaperPreview'), $('textInput').value);
-    fsOverlay.classList.remove('hidden');
-    setFsZoom(1);
-  }
-  function closeFullscreen(){ fsOverlay.classList.add('hidden'); }
-  $('fullscreenBtn').onclick = openFullscreen;
-  $('fsCloseBtn').onclick = closeFullscreen;
-  $('fsZoomInBtn').onclick = ()=> setFsZoom(fsZoom + 0.15);
-  $('fsZoomOutBtn').onclick = ()=> setFsZoom(fsZoom - 0.15);
-  $('fsZoomResetBtn').onclick = ()=> setFsZoom(1);
+  // Escape now simply exits the auto-fullscreen write mode back to notes.
   document.addEventListener('keydown', (e)=>{
-    if(e.key==='Escape' && !fsOverlay.classList.contains('hidden')) closeFullscreen();
+    if(e.key==='Escape' && document.body.classList.contains('write-fullscreen')) showView('notes');
   });
-  (function(){
-    let startDist = 0, startZoom = 1;
-    function dist(t){ return Math.hypot(t[0].clientX-t[1].clientX, t[0].clientY-t[1].clientY); }
-    const wrap = $('fsPaperWrap');
-    wrap.addEventListener('touchstart', (e)=>{
-      if(e.touches.length===2){ startDist = dist(e.touches); startZoom = fsZoom; }
-    }, {passive:true});
-    wrap.addEventListener('touchmove', (e)=>{
-      if(e.touches.length===2){ e.preventDefault(); setFsZoom(startZoom * (dist(e.touches)/startDist)); }
-    }, {passive:false});
-    wrap.addEventListener('wheel', (e)=>{
-      if(e.ctrlKey || e.metaKey){ e.preventDefault(); setFsZoom(fsZoom - e.deltaY*0.001); }
-    }, {passive:false});
-  })();
 
   async function generateAndDownloadImage(hint){
     const text = $('textInput').value;
     if(!text){ showHint(hint, 'Avval biror narsa yozing.', 3000); return; }
 
-    const isFullscreen = !$('fullscreenOverlay').classList.contains('hidden');
-    const wrap = isFullscreen ? $('fsPaperWrap') : $('paperZoomWrap');
-    const paper = isFullscreen ? $('fsPaperPreview') : $('paperPreview');
+    const wrap = $('paperZoomWrap');
+    const paper = $('paperPreview');
 
     const EXPORT_SCALE = 3;
     const wrapRect = wrap.getBoundingClientRect();
@@ -2120,7 +2054,6 @@
   }
 
   $('downloadImgBtn').onclick = ()=> generateAndDownloadImage($('downloadHint'));
-  $('fsDownloadBtn').onclick = ()=> generateAndDownloadImage($('fsDownloadHint'));
 
   (function(){
     const wrap = $('paperZoomWrap');
