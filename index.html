@@ -171,7 +171,6 @@
   .glyph-slot.fallback{font-family:'Fraunces', serif;font-style:italic;font-size:26px;color:var(--ink-soft);align-items:center;}
   .glyph-slot.space{width:14px;}
   .glyph-break{flex-basis:100%;height:0;}
-  .paper-empty{color:var(--ink-soft);font-size:13px;font-style:italic;padding:6px 4px;}
 
   .notes-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px;}
   .notes-list{display:grid;gap:10px;grid-template-columns:1fr;}
@@ -521,9 +520,7 @@
             </button>
           </div>
           <div class="paper-zoom-wrap" id="paperZoomWrap">
-            <div class="paper lined" id="paperPreview">
-              <div class="paper-empty">Yozganingiz shu yerda qo'lyozma ko'rinishida chiqadi.</div>
-            </div>
+            <div class="paper lined" id="paperPreview"></div>
           </div>
           <div class="zoom-controls" id="zoomControls">
             <button id="zoomOutBtn" title="Kichraytirish"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
@@ -836,8 +833,63 @@
   }
 
   async function storageGet(key){ return currentUser ? cloudGet(key) : localGet(key); }
-  async function storageSet(key, value){ return currentUser ? cloudSet(key, value) : localSet(key, value); }
+
+  // ---- Reliability layer for writes (fix #1 and #3) ----
+  // Tracks in-flight writes so the UI can show a persistent "saving" indicator
+  // and warn before the tab closes with unsaved background work, and retries
+  // failed writes automatically instead of silently dropping them.
+  let pendingWriteCount = 0;
+  function bumpPendingWrites(delta){
+    pendingWriteCount += delta;
+    if(pendingWriteCount > 0) showTopbarLoader(); else hideTopbarLoader();
+  }
+  window.addEventListener('beforeunload', function(e){
+    if(pendingWriteCount > 0){
+      e.preventDefault();
+      e.returnValue = '';
+      return '';
+    }
+  });
+  async function withRetry(fn, retries, delayMs){
+    retries = retries==null ? 2 : retries;
+    delayMs = delayMs==null ? 700 : delayMs;
+    let lastErr = null;
+    for(let attempt=0; attempt<=retries; attempt++){
+      try{
+        const res = await fn();
+        if(res !== false) return res;
+        lastErr = new Error('storage write returned false');
+      }catch(e){ lastErr = e; }
+      if(attempt < retries) await new Promise(r=>setTimeout(r, delayMs * (attempt+1)));
+    }
+    console.error('withRetry: all attempts failed', lastErr);
+    return false;
+  }
+  async function storageSetRaw(key, value){
+    return currentUser ? cloudSet(key, value) : localSet(key, value);
+  }
+  async function storageSet(key, value){
+    bumpPendingWrites(1);
+    try{
+      return await withRetry(()=> storageSetRaw(key, value));
+    } finally {
+      bumpPendingWrites(-1);
+    }
+  }
   async function storageDelete(key){ return currentUser ? cloudDelete(key) : localDelete(key); }
+
+  // Merges newly-added characters into whatever manifest is currently on the
+  // server/local store (re-fetched fresh) instead of blindly overwriting it
+  // with a possibly-stale in-memory copy. This reduces the chance that a
+  // concurrent edit from another device gets silently clobbered (fix #2,
+  // partial mitigation for the manifest specifically).
+  async function mergeManifestAdd(chars){
+    const fresh = (await storageGet('manifest')) || [];
+    const merged = fresh.slice();
+    chars.forEach(ch=>{ if(!merged.includes(ch)) merged.push(ch); });
+    manifest = merged;
+    return await storageSet('manifest', manifest);
+  }
 
   async function migrateLocalDataToCloud(){
     try{
@@ -894,7 +946,25 @@
     return auth.signInWithPopup(provider).catch(err=>{
       console.error(err);
       if(err && err.code === 'auth/popup-closed-by-user') return;
-      showToast("Kirishda xatolik yuz berdi. Qaytadan urinib ko'ring.", { danger:true, duration:6000 });
+      // Fix #4: give a specific, actionable message for the most common
+      // sign-in failure modes instead of one generic "xatolik" for everything.
+      if(err && err.code === 'auth/popup-blocked'){
+        showToast("Brauzeringiz pop-up oynani blokladi. Manzil satridagi pop-up belgisini bosib ruxsat bering, so'ng qaytadan urinib ko'ring.", { danger:true, duration:7000 });
+        return;
+      }
+      if(err && err.code === 'auth/cancelled-popup-request'){
+        return;
+      }
+      if(err && err.code === 'auth/network-request-failed'){
+        showToast("Internet aloqasi bilan muammo bo'ldi. Ulanishni tekshirib, qaytadan urinib ko'ring.", { danger:true, duration:6000 });
+        return;
+      }
+      if(err && err.code === 'auth/unauthorized-domain'){
+        showToast("Bu sayt manzili Google kirish uchun ruxsat etilmagan.", { danger:true, duration:6000 });
+        return;
+      }
+      const codeSuffix = err && err.code ? ` (${err.code})` : '';
+      showToast("Kirishda xatolik yuz berdi" + codeSuffix + ". Qaytadan urinib ko'ring.", { danger:true, duration:6000 });
     }).finally(()=>{
       hideTopbarLoader();
     });
@@ -1016,6 +1086,10 @@
   function uid(){ return 'n'+Date.now()+Math.random().toString(36).slice(2,7); }
 
   let lastSavedContent = null, lastSavedTitle = null;
+  // Tracks the updatedAt timestamp of the note as it was when it was loaded
+  // into the editor, so we can detect if another device changed it since
+  // (fix #2 conflict detection for notes).
+  let lastLoadedNoteUpdatedAt = null;
   function refreshToolbarState(){
     const hasText = $('textInput').value.trim().length > 0;
     $('downloadImgBtn').disabled = !hasText;
@@ -1027,6 +1101,7 @@
 
   function newNote(){
     currentNoteId = null;
+    lastLoadedNoteUpdatedAt = null;
     $('noteTitleInput').value = '';
     $('textInput').value = '';
     lastSavedContent = null; lastSavedTitle = null;
@@ -1037,6 +1112,29 @@
   $('notesNewBtn').onclick = ()=>{ newNote(); showView('write'); };
 
   $('saveNoteBtn').onclick = async ()=>{
+    // Fix #2: if this note already exists and someone else changed it since
+    // we loaded it (e.g. from another device), don't silently clobber their
+    // edit — ask first.
+    if(currentNoteId){
+      const fresh = await storageGet('note:'+currentNoteId);
+      if(fresh && lastLoadedNoteUpdatedAt != null && fresh.updatedAt !== lastLoadedNoteUpdatedAt){
+        const overwrite = await showConfirm(
+          "Ziddiyat aniqlandi",
+          "Bu xat boshqa qurilmada o'zgartirilgan. Ustidan yozsangiz, u yerdagi o'zgarish yo'qoladi.",
+          "Ustidan yozish"
+        );
+        if(!overwrite){
+          $('noteTitleInput').value = fresh.title;
+          $('textInput').value = fresh.content;
+          lastSavedContent = fresh.content; lastSavedTitle = fresh.title;
+          lastLoadedNoteUpdatedAt = fresh.updatedAt;
+          renderPreview();
+          refreshToolbarState();
+          showToast("Boshqa qurilmadagi so'nggi versiya yuklandi.");
+          return;
+        }
+      }
+    }
     const content = $('textInput').value;
     let title = $('noteTitleInput').value.trim();
     if(!title) title = content.trim().slice(0,30) || 'Nomsiz xat';
@@ -1053,6 +1151,7 @@
     }
     $('noteTitleInput').value = title;
     lastSavedContent = content; lastSavedTitle = title;
+    lastLoadedNoteUpdatedAt = now;
     setSaveBtnState('saved');
     refreshToolbarState();
     setTimeout(()=>{ setSaveBtnState('default'); }, 1200);
@@ -1106,6 +1205,7 @@
         $('noteTitleInput').value = n.title;
         $('textInput').value = full ? full.content : '';
         lastSavedContent = $('textInput').value; lastSavedTitle = n.title;
+        lastLoadedNoteUpdatedAt = full ? full.updatedAt : n.updatedAt;
         renderPreview();
         refreshToolbarState();
         showView('write');
@@ -1289,8 +1389,7 @@
     const ok1 = await storageSet('glyph:'+ch, glyphsData[ch]);
     let ok2 = true;
     if(!manifest.includes(ch)){
-      manifest.push(ch);
-      ok2 = await storageSet('manifest', manifest);
+      ok2 = await mergeManifestAdd([ch]);
     }
     if(ok1===false || ok2===false){
       showToast("Harfni saqlashda xatolik yuz berdi.", { danger:true });
@@ -1404,10 +1503,6 @@
   function renderInto(target, text){
     target.innerHTML = '';
     if(text.length===0){
-      const empty = document.createElement('div');
-      empty.className='paper-empty';
-      empty.textContent = "Yozganingiz shu yerda qo'lyozma ko'rinishida chiqadi.";
-      target.appendChild(empty);
       return;
     }
     for(const ch of text){
@@ -1923,11 +2018,16 @@
     renderPreview();
     btn.disabled = false;
 
-    // 3) Persist to storage in the background, all requests fired together.
+    // 3) Persist to storage in the background. Each write now goes through
+    //    storageSet, which auto-retries transient failures (fix #3) and keeps
+    //    the topbar loader visible + blocks accidental tab close while any
+    //    write is still in flight (fix #1). The manifest write is merged
+    //    against whatever is currently stored, rather than blindly overwritten,
+    //    so a concurrent addition from another device isn't lost (fix #2).
     let failed = false;
     try{
       const writes = Object.keys(pendingWrites).map(ch => storageSet('glyph:'+ch, pendingWrites[ch]));
-      writes.push(storageSet('manifest', manifest));
+      writes.push(mergeManifestAdd(Object.keys(pendingWrites)));
       const results = await Promise.all(writes);
       failed = results.some(r => r === false);
     }catch(e){
@@ -1936,7 +2036,7 @@
     }
 
     if(failed){
-      showToast("Ba'zi harflarni saqlashda xatolik yuz berdi. Qaytadan urinib ko'ring.", { danger:true });
+      showToast("Ba'zi harflarni saqlashda xatolik yuz berdi. Internetni tekshirib, tugmani yana bosing — muvaffaqiyatli saqlanmagan harflar qayta uriniladi.", { danger:true, duration:7000 });
     }
     showHint(bh, added > 0
       ? `${added} ta harfga yangi qalam yo'li variant qo'shildi (har biri boshqa shriftdan). Yana bossangiz, darrov yana boshqacha variantlar qo'shiladi.`
@@ -1944,20 +2044,4 @@
   };
 
   function setSaveBtnState(state){
-    const btn = $('saveNoteBtn');
-    if(state==='saved'){
-      btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-      btn.title = 'Saqlandi';
-    } else {
-      btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>';
-      btn.title = 'Saqlash';
-    }
-  }
-  setSaveBtnState('default');
-
-  refreshToolbarState();
-
-})();
-</script>
-</body>
-</html>
+    const btn = $('saveNoteBtn')
