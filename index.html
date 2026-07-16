@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MRnotes — bulutli qaydlar ombori</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232A2318' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='24' height='24' rx='5' fill='%23FAF4E4'/%3E%3Cpath d='M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z'/%3E%3Cpath d='M13.5 6.9l3.6 3.6'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2323303F' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='24' height='24' rx='5' fill='%23E7F1FA'/%3E%3Cpath d='M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z'/%3E%3Cpath d='M13.5 6.9l3.6 3.6'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=Caveat:wght@400;600;700&family=Shadows+Into+Light&family=Indie+Flower&family=Homemade+Apple&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -12,17 +12,17 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
   :root{
-    --paper: #F2EAD9;
-    --paper-deep: #E9DFC8;
-    --ink: #3E3626;
-    --ink-soft: #857A64;
-    --line: #E1D6BC;
-    --seal: #C68A5F;
-    --seal-dark: #B0754C;
-    --brass: #A8823A;
-    --pine: #8FA888;
-    --card: #FBF8F0;
-    --shadow: 0 4px 16px rgba(80,64,36,0.08);
+    --paper: #E7F1FA;
+    --paper-deep: #D7E8F5;
+    --ink: #23303F;
+    --ink-soft: #5E7386;
+    --line: #CBE0EF;
+    --seal: #3F86BE;
+    --seal-dark: #2E6C9E;
+    --brass: #5A93B4;
+    --pine: #5FA0AE;
+    --card: #F6FAFE;
+    --shadow: 0 4px 16px rgba(24,50,74,0.10);
     --ease: cubic-bezier(.4,0,.2,1);
   }
   *{box-sizing:border-box;}
@@ -194,7 +194,7 @@
   .settings-utility-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
   .btn-add{
     width:46px;height:46px;border-radius:50%;border:none;flex-shrink:0;
-    background:radial-gradient(circle at 35% 30%, #b5493a, var(--seal) 60%, var(--seal-dark));
+    background:radial-gradient(circle at 35% 30%, #1D4E76, var(--seal) 60%, var(--seal-dark));
     color:#fff;font-size:22px;line-height:1;cursor:pointer;box-shadow:var(--shadow);
     display:flex;align-items:center;justify-content:center;font-weight:600;transition:transform .22s var(--ease);
   }
@@ -222,7 +222,7 @@
   .empty-state svg{display:block;margin:0 auto 10px;opacity:.5;}
 
   .modal-overlay{
-    position:fixed;inset:0;background:rgba(50,42,26,0.38);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;
+    position:fixed;inset:0;background:rgba(15,30,45,0.42);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;
     opacity:1;transition:opacity .2s var(--ease);
   }
   @keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.98);}to{opacity:1;transform:translateY(0) scale(1);}}
@@ -257,7 +257,7 @@
   #drawCanvas{
     width:100%;aspect-ratio:1/1;background:#fff;border:1px solid var(--line);border-radius:12px;
     touch-action:none;cursor:crosshair;
-    background-image:linear-gradient(to right, #f1eee6 1px, transparent 1px), linear-gradient(to bottom, #f1eee6 1px, transparent 1px);
+    background-image:linear-gradient(to right, #E3EFF8 1px, transparent 1px), linear-gradient(to bottom, #E3EFF8 1px, transparent 1px);
     background-size:20% 20%;
   }
   .board-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
@@ -349,7 +349,7 @@
   .confirm-modal{max-width:320px;text-align:center;}
   .confirm-icon{
     width:44px;height:44px;margin:0 auto 14px;border-radius:50%;
-    background:rgba(198,138,95,0.15);color:var(--seal-dark);
+    background:rgba(63,134,190,0.15);color:var(--seal-dark);
     display:flex;align-items:center;justify-content:center;
   }
   .confirm-modal h3{margin:0 0 8px;}
@@ -370,7 +370,7 @@
   .toast{
     pointer-events:auto;max-width:420px;width:100%;
     background:var(--ink);color:var(--paper);border-radius:14px;
-    padding:11px 12px 11px 16px;box-shadow:0 8px 24px rgba(30,24,14,0.28);
+    padding:11px 12px 11px 16px;box-shadow:0 8px 24px rgba(15,30,45,0.28);
     display:flex;align-items:center;gap:10px;font-size:13px;
     animation:toastIn .28s var(--ease);
   }
@@ -379,13 +379,13 @@
   @keyframes toastOut{to{opacity:0;transform:translateY(6px) scale(.97);}}
   .toast .toast-msg{flex:1;line-height:1.4;}
   .toast .toast-undo{
-    background:transparent;border:1px solid rgba(250,244,228,0.35);color:var(--paper);
+    background:transparent;border:1px solid rgba(231,241,250,0.35);color:var(--paper);
     border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0;
     display:flex;align-items:center;gap:5px;transition:background .18s;
   }
-  .toast .toast-undo:hover{background:rgba(250,244,228,0.14);}
+  .toast .toast-undo:hover{background:rgba(231,241,250,0.14);}
   .toast .toast-close{
-    background:transparent;border:none;color:rgba(250,244,228,0.55);cursor:pointer;flex-shrink:0;
+    background:transparent;border:none;color:rgba(231,241,250,0.55);cursor:pointer;flex-shrink:0;
     display:flex;align-items:center;justify-content:center;padding:2px;
   }
   .toast .toast-close:hover{color:var(--paper);}
@@ -393,7 +393,7 @@
 
   #globalLoader{
     position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;
-    background:rgba(242,234,217,0.72);backdrop-filter:blur(1.5px);
+    background:rgba(231,241,250,0.72);backdrop-filter:blur(1.5px);
     opacity:0;pointer-events:none;transition:opacity .18s var(--ease);
   }
   #globalLoader.show{opacity:1;pointer-events:auto;}
@@ -428,7 +428,7 @@
   .account-avatar-fallback{
     width:64px;height:64px;border-radius:50%;margin-bottom:10px;
     display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-size:24px;font-weight:700;
-    background:radial-gradient(circle at 35% 30%, #b5493a, var(--seal) 60%, var(--seal-dark));color:#fff;
+    background:radial-gradient(circle at 35% 30%, #1D4E76, var(--seal) 60%, var(--seal-dark));color:#fff;
     box-shadow:var(--shadow);
   }
   .account-name{font-family:'Fraunces';font-size:17px;font-style:italic;margin:0 0 2px;}
@@ -448,7 +448,7 @@
 <div id="onboardingOverlay" class="onboarding-overlay hidden">
   <div class="onboarding-card">
     <div class="onboarding-icon">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#C68A5F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#3F86BE" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
         <path d="M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z"/>
         <path d="M13.5 6.9l3.6 3.6"/>
       </svg>
@@ -472,7 +472,7 @@
     <div class="header-top">
       <div class="title-row">
         <div class="seal-badge">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C68A5F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3F86BE" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z"/>
             <path d="M13.5 6.9l3.6 3.6"/>
           </svg>
@@ -730,7 +730,7 @@
   <div class="public-wrap">
     <div class="public-header">
       <div class="seal-badge">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C68A5F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3F86BE" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z"/>
           <path d="M13.5 6.9l3.6 3.6"/>
         </svg>
@@ -1570,7 +1570,7 @@
 
   const boardModal = $('boardModal'), boardCharLabel = $('boardCharLabel');
   const canvas = $('drawCanvas'), ctx = canvas.getContext('2d');
-  ctx.lineWidth = 14; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#26221C';
+  ctx.lineWidth = 14; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#23303F';
   const PEN_WIDTH = 14;
   let drawing=false, lastX=0, lastY=0, activeStroke=null;
 
@@ -1688,7 +1688,7 @@
     const c = document.createElement('canvas');
     c.width = w + pad*2; c.height = h + pad*2;
     const cx = c.getContext('2d');
-    cx.strokeStyle = '#26221C'; cx.fillStyle = '#26221C';
+    cx.strokeStyle = '#23303F'; cx.fillStyle = '#23303F';
     cx.lineWidth = variant.penWidth || PEN_WIDTH; cx.lineCap='round'; cx.lineJoin='round';
     variant.strokes.forEach(stroke=>{
       if(stroke.length===0) return;
@@ -1875,16 +1875,16 @@
     out.width = outW; out.height = outH;
     const octx = out.getContext('2d');
 
-    octx.fillStyle = '#FBF8F0';
+    octx.fillStyle = '#F6FAFE';
     octx.fillRect(0,0,outW,outH);
 
     if(settings.showLines){
-      octx.strokeStyle = '#E1D6BC';
+      octx.strokeStyle = '#CBE0EF';
       octx.lineWidth = Math.max(1, EXPORT_SCALE*0.4);
       for(let y=44*EXPORT_SCALE; y<outH; y+=44*EXPORT_SCALE){
         octx.beginPath(); octx.moveTo(0,y+0.5); octx.lineTo(outW,y+0.5); octx.stroke();
       }
-      octx.strokeStyle = 'rgba(198,138,95,0.35)';
+      octx.strokeStyle = 'rgba(46,108,158,0.35)';
       octx.beginPath(); octx.moveTo(22*EXPORT_SCALE,0); octx.lineTo(22*EXPORT_SCALE,outH); octx.stroke();
     }
 
@@ -1900,7 +1900,7 @@
       if(img && img.complete && img.naturalWidth>0){
         octx.drawImage(img, x, y, cw, ch);
       } else if(child.classList.contains('fallback')){
-        octx.fillStyle = '#857A64';
+        octx.fillStyle = '#5E7386';
         octx.font = `italic ${Math.round(cw>0 ? ch*0.8 : 26*EXPORT_SCALE)}px Fraunces, serif`;
         octx.textBaseline = 'middle';
         octx.textAlign = 'left';
