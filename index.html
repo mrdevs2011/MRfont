@@ -165,16 +165,23 @@
   }
   /* The actual editable surface. It sits transparently on top of the
      rendered paper — text you type has no visible browser glyphs of its
-     own (color transparent), only a blinking caret, while renderPreview()
-     paints the live handwriting into the paper behind it. This is what
-     makes "always writing straight into the preview" possible without a
-     separate boxed input. */
+     own (color transparent), while renderPreview() paints the live
+     handwriting into the paper behind it. This is what makes "always
+     writing straight into the preview" possible without a separate boxed
+     input.
+     The native caret is intentionally disabled (caret-color:transparent):
+     the browser positions its blinking caret using the invisible Inter
+     text metrics, which don't match the width of the custom handwriting
+     glyph images drawn behind it, so it visibly drifts out of place the
+     longer you type. A custom caret (#customCaret below) is positioned
+     in JS from the actual rendered glyph-slot boxes instead, so it always
+     lines up with the handwriting. */
   .live-write-input{
     position:absolute;inset:0;width:100%;height:100%;
     border:none;background:transparent;resize:none;
     padding:16px 16px 40vh 24px;
     font-family:'Inter';font-size:16px;line-height:44px;
-    color:transparent;caret-color:var(--seal);
+    color:transparent;caret-color:transparent;
     -webkit-text-fill-color:transparent;
   }
   .live-write-input:focus{outline:none;}
@@ -183,7 +190,19 @@
   .glyph-slot img{height:100%;width:auto;display:block;image-rendering:crisp-edges;}
   .glyph-slot.fallback{font-family:'Inter', serif;font-style:italic;font-size:26px;color:var(--ink-soft);align-items:center;}
   .glyph-slot.space{width:14px;}
+  .glyph-slot.caret-sentinel{width:1px;min-width:1px;opacity:0;margin:0;}
   .glyph-break{flex-basis:100%;height:0;}
+  /* Custom blinking caret, positioned in JS to sit right in front of the
+     handwritten glyph — a bit taller/bolder than a normal text cursor so
+     it reads clearly against the handwriting. */
+  .custom-caret{
+    position:absolute;width:3px;border-radius:2px;
+    background:var(--seal);pointer-events:none;display:none;
+    box-shadow:0 0 0 0.5px rgba(47,128,237,0.4);
+  }
+  .custom-caret.show{display:block;animation:caretBlink 1s step-start infinite;}
+  @keyframes caretBlink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
+  @media (prefers-reduced-motion: reduce){ .custom-caret.show{animation:none;} }
 
   .notes-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px;}
   .notes-list{display:grid;gap:10px;grid-template-columns:1fr;}
@@ -558,6 +577,7 @@
       </div>
       <div class="paper-zoom-wrap" id="paperZoomWrap">
         <div class="paper lined" id="paperPreview"></div>
+        <div id="customCaret" class="custom-caret"></div>
         <textarea id="textInput" class="live-write-input" placeholder="Shu yerga yozing..." autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
       </div>
       <div class="zoom-controls" id="zoomControls">
@@ -1379,6 +1399,7 @@
     document.body.classList.toggle('write-fullscreen', name==='write');
     if(name==='notes') renderNotesList();
     if(name==='settings') renderGlyphGrid();
+    if(name==='write') requestAnimationFrame(()=> requestAnimationFrame(updateCustomCaret));
   }
   tabs.write.onclick = ()=>showView('write');
   tabs.notes.onclick = ()=>showView('notes');
@@ -1971,6 +1992,12 @@
   function renderPreview(){
     const text = $('textInput').value;
     renderInto($('paperPreview'), text);
+    // Sentinel slot: gives every cursor position 0..text.length a real
+    // DOM box to anchor against, including the very end of the text.
+    const sentinel = document.createElement('span');
+    sentinel.className = 'glyph-slot caret-sentinel';
+    $('paperPreview').appendChild(sentinel);
+    updateCustomCaret();
   }
   // Typing fast used to trigger a full preview DOM rebuild on every single
   // keystroke. With the image cache above each rebuild is cheap on its own,
@@ -1985,6 +2012,89 @@
   }
   $('textInput').addEventListener('input', ()=>{ scheduleRenderPreview(); refreshToolbarState(); });
   $('noteTitleInput').addEventListener('input', refreshToolbarState);
+
+  // ---- Custom caret ----
+  // The textarea's own caret is hidden (caret-color:transparent) because
+  // its position comes from invisible Inter-font text metrics, which don't
+  // match the width of the handwriting glyph images drawn behind it — the
+  // longer the text, the more the native caret and the visible last letter
+  // drift apart. Instead we position our own caret element directly from
+  // the rendered glyph-slot boxes, so it always sits right against the
+  // handwriting, and we correct taps to land on the visually-nearest
+  // character instead of wherever the invisible text would have put them.
+  function updateCustomCaret(){
+    const ta = $('textInput');
+    const caret = $('customCaret');
+    const paper = $('paperPreview');
+    const wrap = $('paperZoomWrap');
+    if(document.activeElement !== ta || ta.selectionStart !== ta.selectionEnd){
+      caret.classList.remove('show');
+      return;
+    }
+    const children = paper.children;
+    if(!children.length){ caret.classList.remove('show'); return; }
+    const pos = Math.max(0, Math.min(ta.selectionStart, children.length-1));
+    const atNode = children[pos];
+    let targetRect, x;
+    if(atNode && !atNode.classList.contains('glyph-break')){
+      targetRect = atNode.getBoundingClientRect();
+      x = targetRect.left;
+    } else {
+      const prevNode = children[pos-1];
+      if(prevNode && !prevNode.classList.contains('glyph-break')){
+        targetRect = prevNode.getBoundingClientRect();
+        x = targetRect.right;
+      } else {
+        targetRect = atNode.getBoundingClientRect();
+        x = targetRect.left;
+      }
+    }
+    const wrapRect = wrap.getBoundingClientRect();
+    caret.style.left = (x - wrapRect.left) + 'px';
+    caret.style.top = (targetRect.top - wrapRect.top) + 'px';
+    caret.style.height = Math.max(targetRect.height, 30) + 'px';
+    caret.classList.add('show');
+  }
+
+  // Given a tap point, find the character position (0..text.length) whose
+  // rendered glyph box is visually closest — this is what actually decides
+  // where the cursor should land, instead of the browser's own (invisible,
+  // mismatched) hit-test.
+  function charIndexFromPoint(clientX, clientY){
+    const paper = $('paperPreview');
+    const children = Array.from(paper.children);
+    if(!children.length) return 0;
+    let bestIdx = 0, bestScore = Infinity;
+    for(let i=0;i<children.length;i++){
+      const el = children[i];
+      const isBreak = el.classList.contains('glyph-break');
+      if(isBreak) continue;
+      const r = el.getBoundingClientRect();
+      const cy = r.top + r.height/2;
+      const cx = r.left + r.width/2;
+      const dy = Math.abs(cy - clientY);
+      const dx = Math.abs(cx - clientX);
+      const score = dy*1000 + dx;
+      if(score < bestScore){ bestScore = score; bestIdx = i; }
+    }
+    const r = children[bestIdx].getBoundingClientRect();
+    const before = clientX < (r.left + r.width/2);
+    const maxPos = children.length - 1; // sentinel index == text.length
+    return Math.max(0, Math.min(before ? bestIdx : bestIdx+1, maxPos));
+  }
+  $('textInput').addEventListener('click', (e)=>{
+    const ta = $('textInput');
+    if(ta.selectionStart !== ta.selectionEnd) { updateCustomCaret(); return; }
+    const idx = charIndexFromPoint(e.clientX, e.clientY);
+    ta.setSelectionRange(idx, idx);
+    updateCustomCaret();
+  });
+  $('textInput').addEventListener('focus', updateCustomCaret);
+  $('textInput').addEventListener('blur', ()=> $('customCaret').classList.remove('show'));
+  $('textInput').addEventListener('keyup', updateCustomCaret);
+  document.addEventListener('selectionchange', ()=>{
+    if(document.activeElement === $('textInput')) updateCustomCaret();
+  });
 
   // Escape now simply exits the auto-fullscreen write mode back to notes.
   document.addEventListener('keydown', (e)=>{
@@ -2021,7 +2131,7 @@
     }
 
     Array.from(paper.children).forEach(child=>{
-      if(!child.classList || !child.classList.contains('glyph-slot')) return;
+      if(!child.classList || !child.classList.contains('glyph-slot') || child.classList.contains('caret-sentinel')) return;
       const r = child.getBoundingClientRect();
       const x = (r.left - wrapRect.left) * EXPORT_SCALE;
       const y = (r.top - wrapRect.top) * EXPORT_SCALE;
@@ -2066,6 +2176,7 @@
       paper.style.transform = `scale(${zoom})`;
       paper.style.width = (100/zoom) + '%';
       label.textContent = Math.round(zoom*100) + '%';
+      updateCustomCaret();
     }
     function setZoom(z){
       zoom = Math.min(MAX, Math.max(MIN, z));
