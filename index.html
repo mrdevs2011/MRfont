@@ -125,6 +125,7 @@
   .icon-btn.primary:disabled{background:var(--paper-deep);border-color:var(--line);color:var(--ink-soft);}
   .icon-btn.icon-only{padding:9px;width:36px;height:36px;justify-content:center;}
   .icon-btn svg{flex-shrink:0;display:block;}
+  .icon-btn.danger-hover:hover{color:#b0453a;border-color:#b0453a;}
 
   .lines-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);white-space:nowrap;}
   .lines-toggle input{accent-color:var(--seal);}
@@ -561,6 +562,9 @@
       <div class="settings-utility-row">
         <button id="randomFillBtn" class="icon-btn icon-only" title="Tasodifiy chizish">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+        </button>
+        <button id="deleteAllGlyphsBtn" class="icon-btn icon-only danger-hover" title="Barcha harflarni o'chirish" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
         </button>
       </div>
       <p class="hint" id="backupHint"></p>
@@ -1348,6 +1352,7 @@
 
   function renderGlyphGrid(){
     const glyphGrid = $('glyphGrid');
+    $('deleteAllGlyphsBtn').disabled = manifest.length===0;
     if(manifest.length===0){
       glyphGrid.innerHTML = '<div class="empty-state"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>Hali birorta harf qo\'shilmagan. Boshlash uchun + tugmasini bosing.</div>';
       return;
@@ -1840,6 +1845,54 @@
     if(strokes.length===0) return null;
     return { strokes, bbox: { x:0, y:0, w: raster.w, h: raster.h }, penWidth: RANDOM_PEN_WIDTH };
   }
+
+  $('deleteAllGlyphsBtn').onclick = async ()=>{
+    if(manifest.length===0) return;
+    const count = manifest.length;
+    const ok = await showConfirm(
+      "Barcha harflarni o'chirish",
+      `${count} ta harf va ularning barcha variantlari butunlay o'chiriladi.`,
+      "Hammasini o'chirish"
+    );
+    if(!ok) return;
+
+    const backupManifest = manifest.slice();
+    const backupGlyphs = {};
+    backupManifest.forEach(ch=>{ backupGlyphs[ch] = glyphsData[ch]; });
+
+    showLoader();
+    try{
+      for(const ch of backupManifest){
+        await storageDelete('glyph:'+ch);
+      }
+      manifest = [];
+      glyphsData = {};
+      await storageSet('manifest', manifest);
+    } finally {
+      hideLoader();
+    }
+    renderGlyphGrid();
+    renderPreview();
+
+    showToast(`${count} ta harf o'chirildi.`, {
+      undo: async ()=>{
+        showLoader();
+        try{
+          manifest = backupManifest.slice();
+          glyphsData = Object.assign({}, backupGlyphs);
+          await storageSet('manifest', manifest);
+          for(const ch of manifest){
+            await storageSet('glyph:'+ch, glyphsData[ch]);
+          }
+        } finally {
+          hideLoader();
+        }
+        renderGlyphGrid();
+        renderPreview();
+      },
+      duration: 6000
+    });
+  };
 
   $('randomFillBtn').onclick = async ()=>{
     const bh = $('backupHint');
