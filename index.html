@@ -1894,29 +1894,65 @@
     });
   };
 
+  function setTabsEnabled(enabled){
+    [$('tabWrite'), $('tabNotes'), $('tabSettings')].forEach(t=>{
+      t.disabled = !enabled;
+      t.style.opacity = enabled ? '' : '0.5';
+      t.style.pointerEvents = enabled ? '' : 'none';
+    });
+  }
+
   $('randomFillBtn').onclick = async ()=>{
     const bh = $('backupHint');
+    $('randomFillBtn').disabled = true;
+    setTabsEnabled(false);
+    showLoader();
     showHint(bh, 'Chizilmoqda...', 60000);
     await ensureHandwritingFontsLoaded();
+
+    // 1) Build every glyph fully in memory first — no network calls in this loop,
+    //    so nothing is written to Firebase until we know the whole batch is ready.
+    const MAX_VARIANTS = 6;
+    const pendingWrites = {}; // ch -> variants array to persist
     let added = 0;
-    for(const ch of RANDOM_CHARSET){
+    for(let i=0;i<RANDOM_CHARSET.length;i++){
+      const ch = RANDOM_CHARSET[i];
       const font = HANDWRITING_FONTS[Math.floor(Math.random()*HANDWRITING_FONTS.length)];
       const variant = makeHandwritingVariant(ch, font);
       if(!variant) continue;
       if(!glyphsData[ch]) glyphsData[ch] = [];
       glyphsData[ch].push(variant);
-      const MAX_VARIANTS = 6;
       if(glyphsData[ch].length > MAX_VARIANTS) glyphsData[ch] = glyphsData[ch].slice(-MAX_VARIANTS);
       if(!manifest.includes(ch)) manifest.push(ch);
-      await storageSet('glyph:'+ch, glyphsData[ch]);
+      pendingWrites[ch] = glyphsData[ch];
       added++;
-      renderGlyphGrid();
-      showHint(bh, `Chizilmoqda... (${added})`, 60000);
-      await new Promise(r=>setTimeout(r, 0)); // yield so the UI stays responsive
+      // yield to the UI thread only occasionally, not per-char, so this stays fast
+      if(i % 12 === 0) await new Promise(r=>setTimeout(r, 0));
     }
-    await storageSet('manifest', manifest);
+
+    // 2) Persist the whole batch to Firebase in one go, all requests fired together —
+    //    this finishes in roughly one round-trip instead of ~70 sequential ones, so
+    //    leaving the app mid-way can no longer leave things half-saved.
+    let failed = false;
+    try{
+      const writes = Object.keys(pendingWrites).map(ch => storageSet('glyph:'+ch, pendingWrites[ch]));
+      writes.push(storageSet('manifest', manifest));
+      const results = await Promise.all(writes);
+      failed = results.some(r => r === false);
+    }catch(e){
+      console.error('random fill batch save failed', e);
+      failed = true;
+    }
+
     renderGlyphGrid();
     renderPreview();
+    hideLoader();
+    setTabsEnabled(true);
+    $('randomFillBtn').disabled = false;
+
+    if(failed){
+      showToast("Ba'zi harflarni saqlashda xatolik yuz berdi. Qaytadan urinib ko'ring.", { danger:true });
+    }
     showHint(bh, added > 0
       ? `${added} ta harfga yangi qalam yo'li variant qo'shildi. Yana bossangiz, yana boshqacha variantlar qo'shiladi.`
       : "Hech narsa chizib bo'lmadi.", 6000);
