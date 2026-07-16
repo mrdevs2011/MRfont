@@ -1498,99 +1498,69 @@
     const text = $('textInput').value;
     if(!text){ showHint(hint, 'Avval biror narsa yozing.', 3000); return; }
 
-    const SCALE = 3;
-    const LINE_H = 44 * SCALE;
-    const PAD_X = 24 * SCALE, PAD_Y = 16 * SCALE;
-    const usableWidth = 900 * SCALE - PAD_X - 16*SCALE;
+    // Render exactly what's currently visible on screen: same wrapper the
+    // user is looking at (fullscreen or the small preview), at whatever
+    // zoom level it's currently at, so the exported image matches the
+    // on-screen frame's proportions and glyph positions 1:1.
+    const isFullscreen = !$('fullscreenOverlay').classList.contains('hidden');
+    const wrap = isFullscreen ? $('fsPaperWrap') : $('paperZoomWrap');
+    const paper = isFullscreen ? $('fsPaperPreview') : $('paperPreview');
 
-    const chars = Array.from(text);
-    const items = chars.map(ch=>{
-      if(ch === '\n') return { type:'break' };
-      if(ch === ' ') return { type:'space', w: 14*SCALE };
-      const variants = glyphsData[ch];
-      if(variants && variants.length){
-        const v = variants[Math.floor(Math.random()*variants.length)];
-        const scaleToLine = (38*SCALE) / v.bbox.h;
-        return { type:'glyph', variant:v, w: v.bbox.w*scaleToLine + 2*SCALE, drawH: 38*SCALE, scaleToLine };
-      }
-      return { type:'fallback', ch, w: 22*SCALE };
-    });
+    const EXPORT_SCALE = 3; // resolution multiplier, independent of the export size itself
+    const wrapRect = wrap.getBoundingClientRect();
+    const outW = Math.max(1, Math.round(wrapRect.width * EXPORT_SCALE));
+    const outH = Math.max(1, Math.round(wrapRect.height * EXPORT_SCALE));
 
-    const lines = [[]];
-    let curW = 0;
-    items.forEach(it=>{
-      if(it.type==='break'){ lines.push([]); curW=0; return; }
-      if(curW + (it.w||0) > usableWidth && lines[lines.length-1].length>0){
-        lines.push([]); curW=0;
-      }
-      lines[lines.length-1].push(it);
-      curW += (it.w||0);
-    });
-
-    const showLines = settings.showLines;
-    const height = PAD_Y*2 + lines.length*LINE_H + 10*SCALE;
     const out = document.createElement('canvas');
-    out.width = 900*SCALE; out.height = Math.max(height, LINE_H+PAD_Y*2);
+    out.width = outW; out.height = outH;
     const octx = out.getContext('2d');
 
     octx.fillStyle = '#FBF8F0';
-    octx.fillRect(0,0,out.width,out.height);
-    if(showLines){
-      octx.strokeStyle = '#C9BCA0';
-      octx.lineWidth = 1;
-      for(let y=LINE_H; y<out.height; y+=LINE_H){
-        octx.beginPath(); octx.moveTo(0,y+0.5); octx.lineTo(out.width,y+0.5); octx.stroke();
+    octx.fillRect(0,0,outW,outH);
+
+    if(settings.showLines){
+      octx.strokeStyle = '#E1D6BC';
+      octx.lineWidth = Math.max(1, EXPORT_SCALE*0.4);
+      for(let y=44*EXPORT_SCALE; y<outH; y+=44*EXPORT_SCALE){
+        octx.beginPath(); octx.moveTo(0,y+0.5); octx.lineTo(outW,y+0.5); octx.stroke();
       }
-      octx.strokeStyle = 'rgba(156,59,46,0.35)';
-      octx.beginPath(); octx.moveTo(PAD_X-2*SCALE,0); octx.lineTo(PAD_X-2*SCALE,out.height); octx.stroke();
+      octx.strokeStyle = 'rgba(198,138,95,0.35)';
+      octx.beginPath(); octx.moveTo(22*EXPORT_SCALE,0); octx.lineTo(22*EXPORT_SCALE,outH); octx.stroke();
     }
 
-    let loaded = 0, total = 0;
-    lines.forEach(line=> line.forEach(it=>{ if(it.type==='glyph') total++; }));
-
-    function drawLine(lineItems, y){
-      let x = PAD_X;
-      lineItems.forEach(it=>{
-        if(it.type==='space'){ x += it.w; return; }
-        if(it.type==='fallback'){
-          octx.fillStyle = '#58503F';
-          octx.font = `italic ${22*SCALE}px Georgia, serif`;
-          octx.fillText(it.ch, x, y - 4*SCALE);
-          x += it.w;
-          return;
-        }
-        if(it.type==='glyph'){
-          const img = new Image();
-          img.onload = ()=>{
-            const w = img.width * it.scaleToLine, h = img.height * it.scaleToLine;
-            octx.drawImage(img, x, y - h, w, h);
-            loaded++;
-            if(loaded===total) finish();
-          };
-          img.src = variantToDataUrl(it.variant);
-          x += it.w;
-        }
-      });
-    }
-
-    lines.forEach((line, i)=>{
-      drawLine(line, PAD_Y + (i+1)*LINE_H - 10*SCALE);
+    // Draw each glyph exactly where it's currently rendered relative to the wrapper —
+    // getBoundingClientRect reflects the live, on-screen position including any zoom transform.
+    Array.from(paper.children).forEach(child=>{
+      if(!child.classList || !child.classList.contains('glyph-slot')) return;
+      const r = child.getBoundingClientRect();
+      const x = (r.left - wrapRect.left) * EXPORT_SCALE;
+      const y = (r.top - wrapRect.top) * EXPORT_SCALE;
+      const cw = r.width * EXPORT_SCALE;
+      const ch = r.height * EXPORT_SCALE;
+      if(cw<=0 || ch<=0) return;
+      const img = child.querySelector('img');
+      if(img && img.complete && img.naturalWidth>0){
+        octx.drawImage(img, x, y, cw, ch);
+      } else if(child.classList.contains('fallback')){
+        octx.fillStyle = '#857A64';
+        octx.font = `italic ${Math.round(cw>0 ? ch*0.8 : 26*EXPORT_SCALE)}px Fraunces, serif`;
+        octx.textBaseline = 'middle';
+        octx.textAlign = 'left';
+        octx.fillText(child.textContent, x, y + ch/2);
+      }
     });
-    if(total===0) finish();
 
-    function finish(){
-      out.toBlob(blob=>{
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = (($('noteTitleInput').value.trim() || 'xat')).replace(/[^a-zA-Z0-9а-яА-ЯёЁ\u0400-\u04FF ]+/g,'').trim().replace(/\s+/g,'-') + '.png';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(()=>URL.revokeObjectURL(url), 3000);
-      }, 'image/png');
-      showHint(hint, "Rasm yuklandi — endi uni to'g'ridan-to'g'ri Telegram yoki Instagram'ga rasm/story sifatida yuborishingiz mumkin.", 5000);
-    }
+    out.toBlob(blob=>{
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = (($('noteTitleInput').value.trim() || 'xat')).replace(/[^a-zA-Z0-9а-яА-ЯёЁ\u0400-\u04FF ]+/g,'').trim().replace(/\s+/g,'-') + '.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(()=>URL.revokeObjectURL(url), 3000);
+    }, 'image/png');
+    showHint(hint, "Rasm yuklandi — endi uni to'g'ridan-to'g'ri Telegram yoki Instagram'ga rasm/story sifatida yuborishingiz mumkin.", 5000);
   }
 
   $('downloadImgBtn').onclick = ()=> generateAndDownloadImage($('downloadHint'));
