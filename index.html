@@ -538,6 +538,7 @@
 </style>
 </head>
 <body>
+<a href="#app" class="skip-link">Asosiy tarkibga o'tish</a>
 <div id="topbarLoader" class="topbar-loader"></div>
 <div id="globalLoader"><div class="loader-spinner"></div></div>
 <div id="onboardingOverlay" class="onboarding-overlay hidden">
@@ -578,10 +579,10 @@
         </div>
       </div>
       <div class="auth-box" id="authBox">
-        <button id="signInBtn" class="google-btn" title="Google orqali kirish">
+        <button id="signInBtn" class="google-btn" title="Google orqali kirish" aria-label="Google orqali kirish">
           <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.98v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.98A9 9 0 0 0 0 9c0 1.45.35 2.82.98 4.03z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .98 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
         </button>
-        <button id="accountSettingsBtn" class="settings-icon-btn" style="display:none;" title="Sozlamalar">
+        <button id="accountSettingsBtn" class="settings-icon-btn" style="display:none;" title="Sozlamalar" aria-label="Sozlamalar">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"/>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -595,7 +596,7 @@
   <main>
     <section id="write-view" class="view">
       <div class="write-toolbar">
-        <button id="writeCloseBtn" class="icon-btn icon-only write-close-btn" title="Yopish">
+        <button id="writeCloseBtn" class="icon-btn icon-only write-close-btn" title="Yopish" aria-label="Yopish">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
         <input id="noteTitleInput" class="note-title-input" placeholder="Nomsiz qayd">
@@ -604,16 +605,16 @@
             <input type="checkbox" id="linesToggle" checked>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </label>
-          <button id="newNoteBtn" class="icon-btn icon-only" title="Yangi qayd">
+          <button id="newNoteBtn" class="icon-btn icon-only" title="Yangi qayd" aria-label="Yangi qayd">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="12" y1="12" x2="12" y2="18"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
           </button>
-          <button id="saveNoteBtn" class="icon-btn primary icon-only" disabled title="Saqlash">
+          <button id="saveNoteBtn" class="icon-btn primary icon-only" disabled title="Saqlash" aria-label="Saqlash">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
           </button>
-          <button id="shareNoteBtn" class="icon-btn icon-only" disabled title="Ommaviy havola olish">
+          <button id="shareNoteBtn" class="icon-btn icon-only" disabled title="Ommaviy havola olish" aria-label="Ommaviy havola olish">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
           </button>
-          <button id="downloadImgBtn" class="icon-btn icon-only" disabled title="Rasm sifatida yuklab olish">
+          <button id="downloadImgBtn" class="icon-btn icon-only" disabled title="Rasm sifatida yuklab olish" aria-label="Rasm sifatida yuklab olish">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           </button>
         </div>
@@ -624,10 +625,10 @@
         <textarea id="textInput" class="live-write-input" placeholder="Shu yerga yozing..." autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
       </div>
       <div class="zoom-controls" id="zoomControls">
-        <button id="zoomOutBtn" title="Kichraytirish"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <button id="zoomOutBtn" title="Kichraytirish" aria-label="Kichraytirish"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
         <span id="zoomLabel">100%</span>
-        <button id="zoomInBtn" title="Kattalashtirish"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-        <button id="zoomResetBtn" class="zoom-reset" title="Asl holat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
+        <button id="zoomInBtn" title="Kattalashtirish" aria-label="Kattalashtirish"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <button id="zoomResetBtn" class="zoom-reset" title="Asl holat" aria-label="Asl holat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
       </div>
       <p class="hint" id="downloadHint"></p>
     </section>
@@ -660,11 +661,11 @@
           <p class="settings-sub">Har bir belgi uchun o'z qo'lingiz bilan chizing. Bir belgiga bir nechta variant qo'shsangiz, yozuv tabiiyroq ko'rinadi.</p>
         </div>
         <div class="settings-header-actions">
-          <button id="addGlyphBtn" class="btn-add" title="Yangi harf qo'shish">+</button>
+          <button id="addGlyphBtn" class="btn-add" title="Yangi harf qo'shish" aria-label="Yangi harf qo&quot;shish">+</button>
         </div>
       </div>
       <div class="settings-utility-row">
-        <button id="deleteAllGlyphsBtn" class="icon-btn icon-only danger-hover" title="Barcha harflarni o'chirish" disabled>
+        <button id="deleteAllGlyphsBtn" class="icon-btn icon-only danger-hover" title="Barcha harflarni o'chirish" disabled aria-label="Barcha harflarni o&quot;chirish">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
         </button>
       </div>
@@ -679,15 +680,15 @@
 </div>
 
 <nav class="tabs">
-  <button id="tabNotes" class="active" title="Qaydlarim">
+  <button id="tabNotes" class="active" title="Qaydlarim" aria-label="Qaydlarim">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2"/><polyline points="2.5 7 12 13.5 21.5 7"/></svg>
     <span>Qaydlar</span>
   </button>
-  <button id="tabWrite" title="Yozish">
+  <button id="tabWrite" title="Yozish" aria-label="Yozish">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z"/></svg>
     <span>Yozish</span>
   </button>
-  <button id="tabSettings" title="Shrift">
+  <button id="tabSettings" title="Shrift" aria-label="Shrift">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
     <span>Shrift</span>
   </button>
@@ -698,10 +699,10 @@
     <h3 class="display">Yangi harf</h3>
     <label style="text-align:center;">Klaviaturadagi belgi</label>
     <input id="charInput" class="char-input" maxlength="1" autocomplete="off" placeholder="a">
-    <button id="openBoardBtn" class="btn-primary" title="Chizishga o'tish">
+    <button id="openBoardBtn" class="btn-primary" title="Chizishga o'tish" aria-label="Chizishga o&quot;tish">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
     </button>
-    <button id="closeModalBtn" class="btn-text" title="Bekor qilish">
+    <button id="closeModalBtn" class="btn-text" title="Bekor qilish" aria-label="Bekor qilish">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
@@ -711,11 +712,11 @@
   <div class="variants-modal">
     <h3 class="display">"<span id="variantsCharLabel"></span>" uchun variantlar</h3>
     <div id="variantsList"></div>
-    <button id="addVariantBtn" class="btn-primary" title="Yangi variant chizish">
+    <button id="addVariantBtn" class="btn-primary" title="Yangi variant chizish" aria-label="Yangi variant chizish">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z"/></svg>
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
-    <button id="closeVariantsBtn" class="btn-text" title="Yopish">
+    <button id="closeVariantsBtn" class="btn-text" title="Yopish" aria-label="Yopish">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
@@ -739,15 +740,24 @@
       <svg id="themeIconSun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       <span id="themeLabel" style="font-size:13px;">Qorong'u mavzu</span>
     </button>
-    <button id="modalLinkGoogleBtn" class="btn-primary" title="Google bilan bog'lash" style="display:none;">
+    <button id="exportDataBtn" class="btn-primary" title="Zaxira yuklash" aria-label="Zaxira yuklash">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span style="font-size:13px;">Zaxira yuklash</span>
+    </button>
+    <button id="importDataBtn" class="btn-primary" title="Zaxiradan tiklash" aria-label="Zaxiradan tiklash">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <span style="font-size:13px;">Zaxiradan tiklash</span>
+    </button>
+    <input type="file" id="importFileInput" accept="application/json,.json" style="display:none;" aria-label="Zaxira faylni tanlash">
+    <button id="modalLinkGoogleBtn" class="btn-primary" title="Google bilan bog'lash" style="display:none;" aria-label="Google bilan bog&quot;lash">
       <svg width="16" height="16" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.98v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.98A9 9 0 0 0 0 9c0 1.45.35 2.82.98 4.03z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .98 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
       <span style="font-size:13px;">Google bilan bog'lash</span>
     </button>
-    <button id="modalSignOutBtn" class="btn-primary" title="Chiqish">
+    <button id="modalSignOutBtn" class="btn-primary" title="Chiqish" aria-label="Chiqish">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       <span style="font-size:13px;">Chiqish</span>
     </button>
-    <button id="closeAccountModalBtn" class="btn-text" title="Yopish">
+    <button id="closeAccountModalBtn" class="btn-text" title="Yopish" aria-label="Yopish">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
@@ -758,10 +768,10 @@
     <div class="board-header">
       <span id="boardCharLabel">a</span>
       <div class="board-actions-mini">
-        <button id="undoBoardBtn" class="btn-mini" title="Undo">
+        <button id="undoBoardBtn" class="btn-mini" title="Undo" aria-label="Undo">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
         </button>
-        <button id="clearBoardBtn" class="btn-mini" title="Tozalash">
+        <button id="clearBoardBtn" class="btn-mini" title="Tozalash" aria-label="Tozalash">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
         </button>
       </div>
@@ -769,10 +779,10 @@
     <canvas id="drawCanvas" width="320" height="320"></canvas>
     <p class="hint">Sichqoncha yoki barmog'ingiz bilan belgini chizing. Barcha harflar yozuvda bir xil balandlikda chiqadi.</p>
     <div class="board-actions">
-      <button id="saveGlyphBtn" class="btn-primary" title="Saqlash">
+      <button id="saveGlyphBtn" class="btn-primary" title="Saqlash" aria-label="Saqlash">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       </button>
-      <button id="cancelBoardBtn" class="btn-text" title="Bekor qilish">
+      <button id="cancelBoardBtn" class="btn-text" title="Bekor qilish" aria-label="Bekor qilish">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
@@ -799,7 +809,7 @@
     <p class="settings-sub">Havolaga ega har kim bu qaydni ko'ra oladi (tahrirlay olmaydi).</p>
     <div class="share-link-row">
       <input id="shareLinkInput" readonly>
-      <button id="copyShareLinkBtn" class="icon-btn icon-only" title="Nusxalash">
+      <button id="copyShareLinkBtn" class="icon-btn icon-only" title="Nusxalash" aria-label="Nusxalash">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
       </button>
     </div>
@@ -860,14 +870,28 @@
   const $ = (id) => document.getElementById(id);
 
   const ALL_MODAL_IDS = ['addModal','variantsModal','accountModal','boardModal','shareModal'];
+  let modalReturnFocus = null;
+  function anyModalOpen(){
+    return ALL_MODAL_IDS.some(id=> !$(id).classList.contains('hidden'));
+  }
   function closeAllModals(except){
     ALL_MODAL_IDS.forEach(id=>{
       if(id !== except) $(id).classList.add('hidden');
     });
   }
   function openModal(id){
+    if(!anyModalOpen()) modalReturnFocus = document.activeElement;
     closeAllModals(id);
     $(id).classList.remove('hidden');
+    const el = $(id);
+    setTimeout(()=>{
+      const focusable = el.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if(focusable) focusable.focus();
+    }, 30);
+  }
+  function closeModal(id){
+    $(id).classList.add('hidden');
+    if(modalReturnFocus){ modalReturnFocus.focus(); modalReturnFocus = null; }
   }
 
   const hintTimers = {};
@@ -1367,6 +1391,117 @@
     accountModal.classList.add('hidden');
   };
   accountModal.onclick = (e)=>{ if(e.target===accountModal) accountModal.classList.add('hidden'); };
+
+  async function exportAllData(){
+    showLoader();
+    try{
+      const notes = {};
+      for(const n of notesList){
+        const full = await storageGet('note:'+n.id);
+        if(full) notes[n.id] = full;
+      }
+      const payload = {
+        version: 1,
+        exportedAt: Date.now(),
+        manifest: manifest.slice(),
+        glyphs: JSON.parse(JSON.stringify(glyphsData)),
+        notesList: notesList.map(n=>({ id:n.id, title:n.title, updatedAt:n.updatedAt })),
+        notes,
+        settings: JSON.parse(JSON.stringify(settings))
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `mrnotes-zaxira-${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 3000);
+      showToast("Barcha ma'lumotlar zaxiralandi.");
+    }catch(e){
+      console.error('export failed', e);
+      showToast("Zaxira yaratishda xatolik yuz berdi.", { danger:true });
+    }finally{
+      hideLoader();
+    }
+  }
+  async function importAllData(file){
+    let data;
+    try{
+      const text = await file.text();
+      data = JSON.parse(text);
+    }catch(e){
+      showToast("Faylni o'qishda xatolik. JSON formatini tekshiring.", { danger:true });
+      return;
+    }
+    if(!data || data.version !== 1 || !Array.isArray(data.manifest)){
+      showToast("Noto'g'ri zaxira fayli.", { danger:true });
+      return;
+    }
+    const ok = await showConfirm(
+      "Zaxiradan tiklash",
+      "Bu amal mavjud harflar va qaydlarni zaxiradagilar bilan birlashtiradi. Davom etasizmi?",
+      "Tiklash"
+    );
+    if(!ok) return;
+    showLoader();
+    try{
+      // Merge glyphs
+      const importedManifest = data.manifest || [];
+      for(const ch of importedManifest){
+        const importedVariants = data.glyphs && data.glyphs[ch];
+        if(!importedVariants || !importedVariants.length) continue;
+        const existing = glyphsData[ch] || [];
+        const merged = existing.slice();
+        importedVariants.forEach(v=>{
+          const already = merged.some(m=> JSON.stringify(m) === JSON.stringify(v));
+          if(!already) merged.push(v);
+        });
+        glyphsData[ch] = merged;
+        if(!manifest.includes(ch)) manifest.push(ch);
+        await storageSet('glyph:'+ch, glyphsData[ch]);
+      }
+      await storageSet('manifest', manifest);
+      // Merge notes
+      const importedNotes = data.notes || {};
+      for(const id of Object.keys(importedNotes)){
+        const note = importedNotes[id];
+        const existingIdx = notesList.findIndex(n=> n.id === id);
+        if(existingIdx >= 0){
+          if(note.updatedAt > notesList[existingIdx].updatedAt){
+            notesList[existingIdx] = { id:note.id, title:note.title, updatedAt:note.updatedAt };
+          }
+        } else {
+          notesList.push({ id:note.id, title:note.title, updatedAt:note.updatedAt });
+        }
+        await storageSet('note:'+id, note);
+      }
+      await storageSet('notes-list', notesList);
+      // Merge settings
+      if(data.settings){
+        settings = { ...settings, ...data.settings };
+        await storageSet('settings', settings);
+        applyTheme(settings.theme);
+      }
+      renderGlyphGrid();
+      renderNotesList();
+      renderPreview();
+      showToast("Zaxiradan tiklash yakunlandi.");
+    }catch(e){
+      console.error('import failed', e);
+      showToast("Tiklashda xatolik yuz berdi.", { danger:true });
+    }finally{
+      hideLoader();
+    }
+  }
+  $('exportDataBtn').onclick = exportAllData;
+  $('importDataBtn').onclick = ()=> $('importFileInput').click();
+  $('importFileInput').onchange = (e)=>{
+    const file = e.target.files[0];
+    if(file) importAllData(file);
+    e.target.value = '';
+  };
 
   (async ()=>{
     const done = await isOnboardingDone();
@@ -1957,6 +2092,8 @@
   $('saveGlyphBtn').onclick = async ()=>{
     const ch = pendingChar || pendingVariantChar;
     if(!ch || currentStrokes.length===0){ boardModal.classList.add('hidden'); return; }
+    currentStrokes = simplifyStrokes(currentStrokes);
+    if(currentStrokes.length===0){ boardModal.classList.add('hidden'); return; }
     const bbox = computeBBox(currentStrokes);
     const variant = { strokes: currentStrokes, bbox, penWidth: PEN_WIDTH };
     if(!glyphsData[ch]) glyphsData[ch] = [];
@@ -1976,6 +2113,32 @@
     renderPreview();
     if(wasVariantFlow){ openVariantsModal(ch); }
   };
+
+  function simplifyStrokes(strokes, epsilon){
+    epsilon = epsilon == null ? 2.0 : epsilon;
+    function perpendicularDist(p, a, b){
+      const dx = b.x - a.x, dy = b.y - a.y;
+      if(dx === 0 && dy === 0) return Math.hypot(p.x - a.x, p.y - a.y);
+      const t = ((p.x - a.x) * dx + (p.y - a.y) * dy) / (dx*dx + dy*dy);
+      const projX = a.x + t * dx, projY = a.y + t * dy;
+      return Math.hypot(p.x - projX, p.y - projY);
+    }
+    function rdp(points){
+      if(points.length <= 2) return points;
+      let maxDist = 0, idx = 0;
+      for(let i=1;i<points.length-1;i++){
+        const d = perpendicularDist(points[i], points[0], points[points.length-1]);
+        if(d > maxDist){ maxDist = d; idx = i; }
+      }
+      if(maxDist > epsilon){
+        const left = rdp(points.slice(0, idx+1));
+        const right = rdp(points.slice(idx));
+        return left.slice(0, -1).concat(right);
+      }
+      return [points[0], points[points.length-1]];
+    }
+    return strokes.map(s=> s.length <= 2 ? s : rdp(s)).filter(s=> s.length > 0);
+  }
 
   function computeBBox(strokes){
     let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
@@ -2222,8 +2385,31 @@
   });
 
   // Escape now simply exits the auto-fullscreen write mode back to notes.
+  // Global keyboard shortcuts for accessibility.
   document.addEventListener('keydown', (e)=>{
-    if(e.key==='Escape' && document.body.classList.contains('write-fullscreen')) showView('notes');
+    if(e.key==='Escape'){
+      const openId = ALL_MODAL_IDS.find(id=> !$(id).classList.contains('hidden'));
+      if(openId){ closeModal(openId); return; }
+      if(document.body.classList.contains('write-fullscreen')){
+        e.preventDefault();
+        showView('notes');
+        return;
+      }
+    }
+    const mod = e.ctrlKey || e.metaKey;
+    if(!mod) return;
+    if(e.key.toLowerCase()==='s'){
+      e.preventDefault();
+      if(!$('saveNoteBtn').disabled) $('saveNoteBtn').click();
+    } else if(e.key.toLowerCase()==='n'){
+      e.preventDefault();
+      if(document.body.classList.contains('write-fullscreen')) newNote();
+      else { newNote(); showView('write'); }
+    } else if(e.key.toLowerCase()==='k'){
+      e.preventDefault();
+      if($('notes-view').classList.contains('active')) $('notesSearch').focus();
+      else { showView('notes'); setTimeout(()=>$('notesSearch').focus(), 50); }
+    }
   });
 
   async function generateAndDownloadImage(hint){
