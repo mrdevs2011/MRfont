@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" id="themeColorMeta" content="#F7F8FA">
 <title>MRnotes — bulutli qaydlar ombori</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2323303F' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='24' height='24' rx='5' fill='%23E7F1FA'/%3E%3Cpath d='M4 20l1.2-4.8L15.5 4.9a2 2 0 0 1 2.83 0l0.77.77a2 2 0 0 1 0 2.83L9.3 18.3 4 20z'/%3E%3Cpath d='M13.5 6.9l3.6 3.6'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -28,8 +30,41 @@
   :root{
     --seal-soft: rgba(47,128,237,0.1);
   }
+  body.dark{
+    --paper: #111418;
+    --paper-deep: #1A1F24;
+    --ink: #EAF0F6;
+    --ink-soft: #8A95A3;
+    --line: #2A313A;
+    --card: #1C222A;
+    --shadow: 0 1px 2px rgba(0,0,0,0.24), 0 1px 8px rgba(0,0,0,0.28);
+    --seal: #4FA3F7;
+    --seal-dark: #2F80ED;
+    --seal-soft: rgba(79,163,247,0.14);
+    --brass: #7BA0B8;
+    --pine: #66A893;
+  }
+  body.dark .seal-badge{background:var(--seal);}
+  body.dark .seal-badge svg{stroke:#0E1520 !important;}
+  body.dark .google-btn, body.dark .icon-btn, body.dark .onboarding-card, body.dark .note-card, body.dark .glyph-card, body.dark .modal, body.dark .board-modal, body.dark .variants-modal, body.dark .account-stat, body.dark .confirm-modal, body.dark .share-modal, body.dark .public-wrap .paper, body.dark #drawCanvas{background:var(--card);}
+  body.dark .google-btn, body.dark .icon-btn, body.dark .settings-icon-btn, body.dark .note-card, body.dark .glyph-card, body.dark .modal, body.dark .board-modal, body.dark .variants-modal, body.dark .account-stat, body.dark .confirm-modal, body.dark .share-modal, body.dark #drawCanvas, body.dark .sync-banner, body.dark .empty-state, body.dark .variant-row{border-color:var(--line);}
+  body.dark .paper, body.dark .public-wrap .paper{background:var(--card);}
+  body.dark .paper.lined, body.dark .public-wrap .paper.lined{
+    background: repeating-linear-gradient(var(--card), var(--card) 43px, var(--line) 44px);
+  }
+  body.dark .onboarding-overlay{background:var(--paper);}
+  body.dark #globalLoader{background:rgba(17,20,24,0.82);}
+  body.dark .skeleton-line{
+    background:linear-gradient(90deg, var(--paper-deep) 25%, #2F3A47 37%, var(--paper-deep) 63%);
+  }
+  body.dark .live-write-input::placeholder{opacity:.5;-webkit-text-fill-color:var(--ink-soft);}
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
+  .skip-link{
+    position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;
+    background:var(--seal);color:#fff;padding:8px 14px;border-radius:0 0 12px 0;font-weight:600;font-size:13px;z-index:500;
+  }
+  .skip-link:focus{left:0;top:0;width:auto;height:auto;outline:2px solid #fff;}
   body{
     background:var(--paper);
     color:var(--ink);
@@ -204,7 +239,15 @@
   @keyframes caretBlink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
   @media (prefers-reduced-motion: reduce){ .custom-caret.show{animation:none;} }
 
-  .notes-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px;}
+  .notes-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px;flex-wrap:wrap;}
+  .notes-search-wrap{display:flex;align-items:center;gap:8px;flex:1;min-width:180px;max-width:320px;}
+  .notes-search{
+    flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:9px 12px;font-family:'Inter';font-size:13px;color:var(--ink);
+    transition:border-color .22s var(--ease);
+  }
+  .notes-search:focus{outline:none;border-color:var(--seal);}
+  @media(max-width:560px){ .notes-search-wrap{width:100%;max-width:none;order:3;} }
   .notes-list{display:grid;gap:10px;grid-template-columns:1fr;}
   @media(min-width:700px){ .notes-list{grid-template-columns:1fr 1fr;} }
   @media(min-width:1100px){ .notes-list{grid-template-columns:1fr 1fr 1fr;} }
@@ -595,7 +638,13 @@
           <h2 class="display">Qaydlarim</h2>
           <p class="settings-sub">Bulutda saqlangan qaydlaringiz</p>
         </div>
-        <button id="notesNewBtn" class="btn-add" title="Yangi qayd">+</button>
+        <div class="notes-search-wrap">
+          <input id="notesSearch" type="search" class="notes-search" placeholder="Qaydlarni qidirish..." aria-label="Qaydlarni qidirish">
+          <button id="clearSearchBtn" class="icon-btn icon-only" title="Qidiruvni tozalash" aria-label="Qidiruvni tozalash" style="display:none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <button id="notesNewBtn" class="btn-add" title="Yangi qayd" aria-label="Yangi qayd">+</button>
       </div>
       <div id="notesList" class="notes-list">
         <div class="note-card skeleton-card"><div class="skel-body"><div class="skeleton-line" style="height:14px;width:65%;margin-bottom:9px;"></div><div class="skeleton-line" style="height:10px;width:35%;"></div></div></div>
@@ -685,6 +734,11 @@
         <span class="stat-label">Qayd</span>
       </div>
     </div>
+    <button id="themeToggleBtn" class="btn-primary" title="Mavzuni almashtirish" aria-label="Mavzuni almashtirish">
+      <svg id="themeIconMoon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="themeIconSun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <span id="themeLabel" style="font-size:13px;">Qorong'u mavzu</span>
+    </button>
     <button id="modalLinkGoogleBtn" class="btn-primary" title="Google bilan bog'lash" style="display:none;">
       <svg width="16" height="16" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.98v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.98A9 9 0 0 0 0 9c0 1.45.35 2.82.98 4.03z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .98 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
       <span style="font-size:13px;">Google bilan bog'lash</span>
@@ -1384,6 +1438,7 @@
       manifest.forEach((ch, i) => { if(glyphResults[i]) glyphsData[ch] = glyphResults[i]; });
       $('linesToggle').checked = settings.showLines;
       $('paperPreview').classList.toggle('lined', settings.showLines);
+      applyTheme(settings.theme);
       renderGlyphGrid();
       renderPreview();
       renderNotesList();
@@ -1403,7 +1458,7 @@
       views[k].classList.toggle('active', k===name);
     });
     document.body.classList.toggle('write-fullscreen', name==='write');
-    if(name==='notes') renderNotesList();
+    if(name==='notes'){ Promise.all(notesList.map(hydrateNoteContent)).then(renderNotesList); }
     if(name==='settings') renderGlyphGrid();
     if(name==='write') requestAnimationFrame(()=> requestAnimationFrame(updateCustomCaret));
   }
@@ -1412,11 +1467,50 @@
   tabs.settings.onclick = ()=>showView('settings');
   $('writeCloseBtn').onclick = ()=>showView('notes');
 
+  $('notesSearch').addEventListener('input', async (e)=>{
+    notesSearchQuery = e.target.value;
+    $('clearSearchBtn').style.display = notesSearchQuery.trim() ? 'flex' : 'none';
+    await Promise.all(notesList.map(hydrateNoteContent));
+    renderNotesList();
+  });
+  $('clearSearchBtn').onclick = ()=>{
+    $('notesSearch').value = '';
+    notesSearchQuery = '';
+    $('clearSearchBtn').style.display = 'none';
+    renderNotesList();
+    $('notesSearch').focus();
+  };
+
   $('linesToggle').onchange = async (e)=>{
     settings.showLines = e.target.checked;
     $('paperPreview').classList.toggle('lined', settings.showLines);
     await storageSet('settings', settings);
   };
+
+  function applyTheme(theme){
+    if(!theme){
+      theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    document.body.classList.toggle('dark', theme === 'dark');
+    const isDark = document.body.classList.contains('dark');
+    $('themeIconMoon').style.display = isDark ? 'none' : 'inline-block';
+    $('themeIconSun').style.display = isDark ? 'inline-block' : 'none';
+    $('themeLabel').textContent = isDark ? 'Yorug\' mavzu' : 'Qorong\'u mavzu';
+    const meta = $('themeColorMeta');
+    if(meta) meta.content = isDark ? '#111418' : '#F7F8FA';
+  }
+  $('themeToggleBtn').onclick = async ()=>{
+    const isDark = document.body.classList.contains('dark');
+    const next = isDark ? 'light' : 'dark';
+    settings.theme = next;
+    applyTheme(next);
+    await storageSet('settings', settings);
+  };
+  if(window.matchMedia){
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)=>{
+      if(!settings.theme) applyTheme(e.matches ? 'dark' : 'light');
+    });
+  }
 
   function uid(){ return 'n'+Date.now()+Math.random().toString(36).slice(2,7); }
 
@@ -1612,13 +1706,34 @@
   $('closeShareModalBtn').onclick = ()=> $('shareModal').classList.add('hidden');
   $('shareModal').onclick = (e)=>{ if(e.target===$('shareModal')) $('shareModal').classList.add('hidden'); };
 
+  let notesSearchQuery = '';
+  function filteredNotesList(){
+    const q = notesSearchQuery.trim().toLowerCase();
+    if(!q) return notesList;
+    return notesList.filter(n=>{
+      const titleMatch = (n.title || '').toLowerCase().includes(q);
+      const full = n._content || '';
+      const contentMatch = full.toLowerCase().includes(q);
+      return titleMatch || contentMatch;
+    });
+  }
+  async function hydrateNoteContent(n){
+    if(n._content != null) return n;
+    const full = await storageGet('note:'+n.id);
+    n._content = full ? (full.content || '') : '';
+    return n;
+  }
   function renderNotesList(){
     const el = $('notesList');
-    if(notesList.length===0){
-      el.innerHTML = '<div class="empty-state"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>Hali hech narsa saqlanmagan. Birinchi qaydingizni yozing.</div>';
+    const filtered = filteredNotesList();
+    if(filtered.length===0){
+      const emptyMsg = notesSearchQuery.trim()
+        ? 'Qidiruvga mos qayd topilmadi.'
+        : 'Hali hech narsa saqlanmagan. Birinchi qaydingizni yozing.';
+      el.innerHTML = `<div class="empty-state"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>${emptyMsg}</div>`;
       return;
     }
-    const sorted = [...notesList].sort((a,b)=>b.updatedAt-a.updatedAt);
+    const sorted = [...filtered].sort((a,b)=>b.updatedAt-a.updatedAt);
     el.innerHTML = '';
     sorted.forEach(n=>{
       const card = document.createElement('div');
@@ -2298,6 +2413,15 @@
   refreshToolbarState();
 
 })();
+</script>
+<script>
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', ()=>{
+      navigator.serviceWorker.register('service-worker.js').catch(err=>{
+        console.error('SW registration failed', err);
+      });
+    });
+  }
 </script>
 </body>
 </html>

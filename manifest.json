@@ -1,0 +1,24 @@
+{
+  "name": "MRnotes — bulutli qaydlar ombori",
+  "short_name": "MRnotes",
+  "description": "Qaydlaringizni bulutda xavfsiz saqlang va o'z qo'lyozmangizdan shrift yasang.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#F7F8FA",
+  "theme_color": "#F7F8FA",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' fill='none' stroke='%2323303F' stroke-width='16' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='192' height='192' rx='38' fill='%23E7F1FA'/%3E%3Cpath d='M32 160l9.6-38.4L124 39.2a16 16 0 0 1 22.64 0l6.16 6.16a16 16 0 0 1 0 22.64L74.4 146.4 32 160z'/%3E%3Cpath d='M108 55.2l28.8 28.8'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='none' stroke='%2323303F' stroke-width='40' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='512' height='512' rx='102' fill='%23E7F1FA'/%3E%3Cpath d='M85 426l26-103L330 105a43 43 0 0 1 60 0l16 16a43 43 0 0 1 0 60L198 390 85 426z'/%3E%3Cpath d='M288 147l77 77'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
